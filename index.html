@@ -140,7 +140,8 @@ img{max-width:100%}
 .sheet p{margin:0;color:var(--muted);font-size:14.5px}
 .field{display:flex;flex-direction:column;gap:5px}
 .field label{font-size:13px;color:var(--muted);font-weight:600}
-.field input{border:1.5px solid var(--line);background:var(--bg);border-radius:12px;min-height:48px;padding:0 14px;width:100%}
+.field input,.field textarea{border:1.5px solid var(--line);background:var(--bg);border-radius:12px;min-height:48px;padding:0 14px;width:100%;font:inherit;color:inherit}
+.field textarea{padding:10px 14px;min-height:150px;line-height:1.8;resize:vertical}
 .seg{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:8px}
 .seg button{min-height:52px;border:1.5px solid var(--line);border-radius:12px;font-weight:600;font-size:14px;padding:4px 6px}
 .seg button[aria-pressed="true"]{background:var(--brand);border-color:var(--brand);color:#fff}
@@ -189,6 +190,29 @@ img{max-width:100%}
   .cv-table th,.cv-table td{border:.3mm solid #b9c7c0;padding:2.2mm 3mm;text-align:start}
   .cv-table th{background:#0A6B4D;color:#fff;font-weight:600}
   .cv-table td.c{text-align:center;font-variant-numeric:tabular-nums;width:22mm}
+  .pp-body{min-height:0;font-size:13pt}
+  .intro p{margin:0 0 6mm;line-height:2.2;text-align:justify}
+  .info{width:100%;border-collapse:collapse;font-size:13pt}
+  .info th,.info td{border:.3mm solid #b9c7c0;padding:4mm;text-align:start}
+  .info th{background:#E2F2EA;width:50mm;font-weight:600;color:#07503A}
+  .pp-foot span:nth-child(2){font-weight:700;color:#07503A}
+  .cover2{grid-template-rows:auto minmax(0,1fr) auto;border:1.2mm solid #0A6B4D;border-radius:6mm;padding:9mm}
+  .cover2 .cv-top{font-weight:600}
+  .cv-mid2{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10mm;text-align:center;min-height:0}
+  .cv-band{background:#0A6B4D;color:#fff;border-radius:6mm;padding:12mm 8mm;width:100%}
+  .cv-band h1{font-family:var(--display);font-size:30pt;margin:0;line-height:1.5}
+  .cv-band p{margin:2mm 0 0;font-size:15pt}
+  .cv-lbl{font-size:12pt;color:#555}
+  .cv-name{font-family:var(--display);font-size:22pt;font-weight:700;color:#07503A;line-height:1.8}
+  .cv-sub{font-size:13pt}
+  .cv-bot{display:flex;justify-content:space-between;font-size:11pt;border-top:.4mm solid #0A6B4D;padding-top:3mm}
+  .qr{width:32mm;height:32mm;image-rendering:pixelated}
+  .qr-box{display:flex;flex-direction:column;align-items:center;gap:2mm;font-size:9.5pt;color:#444}
+  .div-mid{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7mm;text-align:center;min-height:0;border:1mm solid #0A6B4D;border-radius:6mm;padding:10mm}
+  .div-num{font-family:var(--display);font-size:80pt;font-weight:800;color:#0A6B4D;line-height:1}
+  .div-mid h2{font-family:var(--display);font-size:26pt;margin:0;line-height:1.6;color:#07503A}
+  .div-chips{display:flex;gap:4mm;font-size:13pt}
+  .div-chips span{background:#E2F2EA;border-radius:99mm;padding:1.5mm 6mm}
   .cv-sign{display:flex;justify-content:space-between;font-size:11pt;padding:0 6mm 4mm}
   .cv-sign div{text-align:center;line-height:2.4}
 }
@@ -202,6 +226,7 @@ img{max-width:100%}
 <div id="layer"></div>
 <div id="printRoot"></div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
 <script>
 "use strict";
 const ELS=[
@@ -231,9 +256,11 @@ const plural=n=>n===0?"بدون شواهد":n===1?"شاهد واحد":n===2?"ش�
 let framed=false;try{framed=window.self!==window.top}catch(e){framed=true}
 
 /* ---------- settings ---------- */
-const DEF={name:"زاهر الزهراني",school:"ابتدائية عمرو بن سالم الخزاعي",admin:"الإدارة العامة للتعليم بمنطقة مكة المكرمة",subject:"العلوم - الصف الأول الابتدائي",year:"1448هـ",principal:"",titles:{},custom:[],per:2,cover:true,seeded:false};
+const DEF={name:"زاهر الزهراني",school:"ابتدائية عمرو بن سالم الخزاعي",admin:"الإدارة العامة للتعليم بمنطقة مكة المكرمة",subject:"العلوم - الصف الأول الابتدائي",year:"1448هـ",principal:"",titles:{},custom:[],per:2,cover:true,seeded:false,intro:"",link:"",links:{}};
 let S=Object.assign({},DEF);
 try{const r=localStorage.getItem("shawahid.s");if(r)S=Object.assign({},DEF,JSON.parse(r))}catch(e){}
+function introText(){return S.intro||("الحمد لله رب العالمين، والصلاة والسلام على نبينا محمد وعلى آله وصحبه أجمعين، وبعد:\n\nيضم هذا الملف شواهد الأداء الوظيفي للعام الدراسي "+S.year+"، مرتبة حسب عناصر تقييم الأداء الوظيفي للمعلم. يوثق كل شاهد جانبا من العمل المنفذ خلال العام داخل الصف وخارجه، ويبين أثره على تعلم الطلاب.\n\nحرصت أن يكون الملف واضحا وسهل المراجعة، فلكل عنصر قسم مستقل يبدأ بصفحة فاصلة ثم شواهده بتاريخها ووصفها.\n\nأسأل الله أن يجعل هذا العمل خالصا لوجهه، وأن ينفع به أبناءنا الطلاب.")}
+function qrImg(t){try{if(!t||typeof qrcode!=="function")return"";const q=qrcode(0,"M");q.addData(t);q.make();return `<img class="qr" src="${q.createDataURL(6,2)}" alt="">`}catch(e){return""}}
 function saveS(){try{localStorage.setItem("shawahid.s",JSON.stringify(S))}catch(e){}}
 function allEls(){
   return ELS.map(e=>Object.assign({},e,{t:S.titles[e.id]||e.t}))
@@ -405,17 +432,21 @@ function settingsSheet(){
   const f=(k,l)=>`<div class="field"><label for="s-${k}">${l}</label><input id="s-${k}" value="${esc(S[k])}" autocomplete="off"></div>`;
   openSheet(`<h3>بياناتي</h3><p>تظهر هذه البيانات في غلاف الملف وترويسة كل صفحة عند الطباعة.</p>
    ${f("name","اسم المعلم")}${f("subject","المادة والصف")}${f("school","المدرسة")}${f("admin","إدارة التعليم")}${f("principal","مدير المدرسة")}${f("year","العام الدراسي")}
+   <div class="field"><label for="s-link">رابط الملف الإلكتروني (يظهر باركود في الغلاف)</label><input id="s-link" value="${esc(S.link)}" placeholder="اختياري: رابط مجلد الشواهد" inputmode="url" dir="ltr" autocomplete="off"></div>
+   <div class="field"><label for="s-intro">المقدمة</label><textarea id="s-intro">${esc(introText())}</textarea></div>
    <div class="row"><button class="btn btn-brand" id="s-save">حفظ</button><button class="btn btn-line" id="s-x">إغلاق</button></div>`,s=>{
     s.querySelector("#s-x").onclick=()=>back();
-    s.querySelector("#s-save").onclick=()=>{["name","subject","school","admin","principal","year"].forEach(k=>S[k]=s.querySelector("#s-"+k).value.trim());saveS();back();renderHome();toast("تم حفظ البيانات")}})}
+    s.querySelector("#s-save").onclick=()=>{["name","subject","school","admin","principal","year","link","intro"].forEach(k=>S[k]=s.querySelector("#s-"+k).value.trim());saveS();back();renderHome();toast("تم حفظ البيانات")}})}
 function nameSheet(id){
   const el=id!=null?elById(id):null;
   openSheet(`<h3>${el?"تعديل اسم العنصر":"إضافة عنصر جديد"}</h3>
    <div class="field"><label for="n-t">اسم العنصر</label><input id="n-t" value="${esc(el?el.t:"")}" placeholder="مثال: المبادرات والأعمال التطوعية" autocomplete="off"></div>
+   ${el?`<div class="field"><label for="n-l">رابط شواهد العنصر (يظهر باركود في صفحة العنصر)</label><input id="n-l" value="${esc(S.links[el.id]||"")}" placeholder="اختياري" inputmode="url" dir="ltr" autocomplete="off"></div>`:""}
    <div class="row"><button class="btn btn-brand" id="n-save">حفظ</button>${el&&el.custom?`<button class="btn btn-danger" id="n-del">حذف العنصر</button>`:""}<button class="btn btn-line" id="n-x">إغلاق</button></div>`,s=>{
     s.querySelector("#n-x").onclick=()=>back();
     s.querySelector("#n-save").onclick=()=>{const v=s.querySelector("#n-t").value.trim();if(!v){toast("اكتب اسم العنصر");return}
       if(!el)S.custom.push({id:"c"+uid(),t:v});else if(el.custom)S.custom.find(c=>c.id===el.id).t=v;else S.titles[el.id]=v;
+      if(el){const l=s.querySelector("#n-l").value.trim();if(l)S.links[el.id]=l;else delete S.links[el.id]}
       saveS();back();if(cur!=null)renderEl();else renderHome()};
     const del=s.querySelector("#n-del");
     if(del)del.onclick=()=>confirmSheet("حذف العنصر وكل شواهده؟","سيُحذف العنصر مع "+plural(ofEl(el.id).length)+".","حذف",async()=>{
@@ -425,10 +456,10 @@ function nameSheet(id){
 function printSheet(elId){
   let scope=elId!=null?"one":"all";const el=elId!=null?elById(elId):null;
   openSheet(`<h3>طباعة ${el?"شواهد العنصر":"ملف الشواهد"}</h3>
-   ${el?`<p>${esc(el.t)}</p>`:`<p>يُطبع الغلاف وفهرس العناصر ثم شواهد كل عنصر بالترتيب.</p>`}
+   ${el?`<p>${esc(el.t)}</p>`:`<p>ملف جاهز من أوله لآخره: الغلاف، بيانات المعلم، المقدمة، الفهرس، ثم كل عنصر بصفحة فاصلة وشواهده، ثم الخاتمة والاعتماد.</p>`}
    <div class="field"><label>عدد الشواهد في الصفحة</label><div class="seg" id="p-per">
      ${[[1,"شاهد واحد"],[2,"شاهدان"],[4,"أربعة شواهد"]].map(o=>`<button data-v="${o[0]}" aria-pressed="${S.per===o[0]}">${o[1]}</button>`).join("")}</div></div>
-   ${el?"":`<label class="check" for="p-cover"><input type="checkbox" id="p-cover" ${S.cover?"checked":""}>إضافة الغلاف والفهرس</label>`}
+   ${el?"":`<label class="check" for="p-cover"><input type="checkbox" id="p-cover" ${S.cover?"checked":""}>الملف الكامل بالغلاف والمقدمة والفهرس والخاتمة</label>`}
    ${framed?`<p>الطباعة تعمل عند فتح التطبيق من متصفح الجوال مباشرة، وليس من داخل هذه المعاينة.</p>`:`<p>من نافذة الطباعة تقدر تختار الطابعة أو الحفظ كملف PDF.</p>`}
    <div class="row"><button class="btn btn-brand" id="p-go">${svg(IC.print)}طباعة</button><button class="btn btn-line" id="p-x">إغلاق</button></div>`,s=>{
     s.querySelector("#p-per").onclick=e=>{const b=e.target.closest("button");if(!b)return;S.per=+b.dataset.v;saveS();s.querySelectorAll("#p-per button").forEach(x=>x.setAttribute("aria-pressed",x===b))};
@@ -438,23 +469,48 @@ function printSheet(elId){
       await Promise.all([...document.querySelectorAll("#printRoot img")].map(i=>i.decode?i.decode().catch(()=>{}):0));
       try{window.print()}catch(e){toast("الطباعة غير متاحة في هذا العرض")}}})}
 function buildPrint(onlyId){
-  const els=allEls();const targets=onlyId!=null?els.filter(e=>e.id===onlyId):els;let pages="",count=0;const per=S.per||2;
-  if(onlyId==null&&S.cover){
-    pages+=`<section class="pp cover">
-     <div class="cv-top"><div>المملكة العربية السعودية<br>وزارة التعليم<br>${esc(S.admin)}<br>${esc(S.school)}</div><div style="text-align:end">العام الدراسي ${esc(S.year)}<br>${esc(hijri(Date.now()))}</div></div>
-     <div class="cv-title"><h1>ملف شواهد الأداء الوظيفي</h1><p>${esc(S.subject)}</p><p class="nm">${esc(S.name)}</p></div>
-     <div class="cv-mid"><table class="cv-table"><thead><tr><th style="width:12mm">م</th><th>عنصر الأداء</th><th>الوزن</th><th>عدد الشواهد</th></tr></thead><tbody>
-     ${els.map((e,k)=>`<tr><td class="c">${k+1}</td><td>${esc(e.t)}</td><td class="c">${e.w?e.w+"%":"-"}</td><td class="c">${ofEl(e.id).length}</td></tr>`).join("")}
-     </tbody></table></div>
-     <div class="cv-sign"><div>المعلم<br>${esc(S.name)}<br>التوقيع: ....................</div><div>مدير المدرسة<br>${esc(S.principal||"....................")}<br>التوقيع: ....................</div></div>
+  const els=allEls();const per=S.per||2;const full=onlyId==null&&S.cover;
+  const targets=(onlyId!=null?els.filter(e=>e.id===onlyId):els).filter(e=>ofEl(e.id).length);
+  if(!targets.length){$("#printRoot").innerHTML="";return 0}
+  let pn=full?5:1;const start={};
+  for(const e of targets){start[e.id]=pn;pn+=(full?1:0)+Math.ceil(ofEl(e.id).length/per)}
+  const foot=n=>`<div class="pp-foot"><span>${esc(S.school)}</span><span>${n}</span><span>العام الدراسي ${esc(S.year)}</span></div>`;
+  const head=t=>`<div class="pp-head"><b>${t}</b><span>${esc(S.name)}</span></div>`;
+  let pages="",count=0,n=1;
+  if(full){
+    const qr=qrImg(S.link);
+    pages+=`<section class="pp cover2">
+     <div class="cv-top"><div>المملكة العربية السعودية<br>وزارة التعليم<br>${esc(S.admin)}<br>${esc(S.school)}</div><div style="text-align:end">العام الدراسي<br>${esc(S.year)}</div></div>
+     <div class="cv-mid2"><div class="cv-band"><h1>ملف شواهد الأداء الوظيفي</h1><p>للعام الدراسي ${esc(S.year)}</p></div>
+       <div><div class="cv-lbl">إعداد المعلم</div><div class="cv-name">${esc(S.name)}</div><div class="cv-sub">${esc(S.subject)}</div></div>
+       ${qr?`<div class="qr-box">${qr}<span>امسح الباركود لفتح النسخة الإلكترونية</span></div>`:""}</div>
+     <div class="cv-bot"><span>مدير المدرسة: ${esc(S.principal||"....................")}</span><span>${esc(hijri(Date.now()))}</span></div>
     </section>`;
+    const row=(k,v)=>`<tr><th>${k}</th><td>${esc(v||"")}</td></tr>`;
+    pages+=`<section class="pp">${head("بيانات المعلم")}<div class="pp-body"><table class="info"><tbody>
+      ${row("اسم المعلم",S.name)}${row("المادة والصف",S.subject)}${row("المدرسة",S.school)}${row("إدارة التعليم",S.admin)}${row("مدير المدرسة",S.principal)}${row("العام الدراسي",S.year)}
+      ${row("عدد عناصر الأداء",els.length)}${row("إجمالي الشواهد",evs.length)}${row("تاريخ إعداد الملف",hijri(Date.now()))}
+      </tbody></table></div>${foot(2)}</section>`;
+    pages+=`<section class="pp">${head("المقدمة")}<div class="pp-body intro">${esc(introText()).split(/\n+/).map(x=>`<p>${x}</p>`).join("")}</div>${foot(3)}</section>`;
+    pages+=`<section class="pp">${head("الفهرس")}<div class="pp-body"><table class="cv-table"><thead><tr><th style="width:12mm">م</th><th>عنصر الأداء</th><th>الوزن</th><th>عدد الشواهد</th><th>الصفحة</th></tr></thead><tbody>
+      ${els.map((e,k)=>`<tr><td class="c">${k+1}</td><td>${esc(e.t)}</td><td class="c">${e.w?e.w+"%":"-"}</td><td class="c">${ofEl(e.id).length}</td><td class="c">${start[e.id]||"-"}</td></tr>`).join("")}
+      <tr><td class="c"></td><td>الخاتمة والاعتماد</td><td class="c"></td><td class="c"></td><td class="c">${pn}</td></tr>
+      </tbody></table></div>${foot(4)}</section>`;
+    n=5;
   }
-  for(const e of targets){const list=ofEl(e.id);if(!list.length)continue;const idx=els.findIndex(x=>x.id===e.id)+1;const np=Math.ceil(list.length/per);
+  for(const e of targets){const list=ofEl(e.id);const idx=els.findIndex(x=>x.id===e.id)+1;const np=Math.ceil(list.length/per);
+    if(full){const qr=qrImg(S.links[e.id]);
+      pages+=`<section class="pp divp"><div></div><div class="div-mid"><div class="div-num">${pad(idx)}</div><h2>${esc(e.t)}</h2>
+        <div class="div-chips">${e.w?`<span>الوزن ${e.w}%</span>`:""}<span>${plural(list.length)}</span></div>
+        ${qr?`<div class="qr-box">${qr}<span>امسح الباركود لفتح شواهد هذا العنصر</span></div>`:""}</div>${foot(n++)}</section>`}
     for(let p=0;p<np;p++){const chunk=list.slice(p*per,p*per+per);count+=chunk.length;
-      pages+=`<section class="pp"><div class="pp-head"><b>${idx}. ${esc(e.t)}</b><span>${esc(S.name)}</span></div>
-       <div class="pp-grid g${per}">${chunk.map(v=>`<figure><img src="${urlOf(v)}" alt=""><figcaption>${esc(v.cap||"شاهد")}<small>${esc(hijri(v.ts))}</small></figcaption></figure>`).join("")}</div>
-       <div class="pp-foot"><span>${esc(S.school)}</span><span>${np>1?"صفحة "+(p+1)+" من "+np+" · ":""}العام الدراسي ${esc(S.year)}</span></div></section>`}}
-  $("#printRoot").innerHTML=count?pages:"";return count;
+      pages+=`<section class="pp">${head(idx+". "+esc(e.t))}
+       <div class="pp-grid g${per}">${chunk.map(v=>`<figure><img src="${urlOf(v)}" alt=""><figcaption>${esc(v.cap||"شاهد")}<small>${esc(hijri(v.ts))}</small></figcaption></figure>`).join("")}</div>${foot(n++)}</section>`}}
+  if(full){
+    pages+=`<section class="pp">${head("الخاتمة والاعتماد")}<div class="pp-body intro"><p>تم بحمد الله إعداد ملف شواهد الأداء الوظيفي للعام الدراسي ${esc(S.year)}، ويضم ${evs.length} من الشواهد موزعة على ${targets.length} من عناصر الأداء.</p><p>أقر بأن جميع الشواهد الواردة في هذا الملف صحيحة وتمثل أعمالا نفذتها خلال العام الدراسي.</p>
+      <div class="cv-sign" style="margin-top:25mm"><div>المعلم<br>${esc(S.name)}<br>التوقيع: ....................</div><div>مدير المدرسة<br>${esc(S.principal||"....................")}<br>التوقيع: ....................<br>الختم</div></div></div>${foot(n)}</section>`;
+  }
+  $("#printRoot").innerHTML=pages;return count;
 }
 
 /* ---------- backup ---------- */

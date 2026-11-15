@@ -163,63 +163,109 @@ img{max-width:100%}
 .toast{position:fixed;bottom:22px;inset-inline:16px;z-index:40;margin:auto;max-width:420px;background:var(--ink);color:var(--bg);border-radius:14px;padding:12px 16px;text-align:center;font-size:14.5px;font-weight:500}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 
-/* print */
+/* print: full-bleed A4 pages; deep green cover and section openers, white content pages with a green header band */
 #printRoot{display:none}
-@page{size:A4;margin:10mm}
+@page{size:A4;margin:0}
 @media print{
-  html,body{background:#fff!important}
+  html,body{background:#fff!important;margin:0}
   #app,.overlay,.viewer,.toast{display:none!important}
-  #printRoot{display:block;color:#111;font-family:var(--body);-webkit-print-color-adjust:exact;print-color-adjust:exact}
-  .pp{height:275mm;display:grid;grid-template-rows:auto minmax(0,1fr) auto;gap:5mm;break-after:page;page-break-after:always;overflow:hidden}
+  #printRoot{display:block;color:#10261F;font-family:var(--body);-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .pp{position:relative;width:210mm;height:296.6mm;overflow:hidden;break-after:page;page-break-after:always;background:#fff;display:flex;flex-direction:column}
   .pp:last-child{break-after:auto;page-break-after:auto}
-  .pp-head{display:flex;justify-content:space-between;align-items:flex-end;gap:6mm;border-bottom:1mm solid #0A6B4D;padding-bottom:3mm}
-  .pp-head b{font-family:var(--display);font-size:15pt;color:#07503A;line-height:1.4}
-  .pp-head span{font-size:10pt;color:#444;white-space:nowrap}
-  .pp-foot{display:flex;justify-content:space-between;font-size:9pt;color:#555;border-top:.3mm solid #cfd8d3;padding-top:2mm}
-  .pp-grid{display:grid;gap:5mm;min-height:0;align-content:start}
+  .lat{position:absolute;inset:0;background:repeating-linear-gradient(60deg,rgba(255,255,255,.055) 0 .45mm,transparent .45mm 8mm),repeating-linear-gradient(-60deg,rgba(255,255,255,.055) 0 .45mm,transparent .45mm 8mm)}
+  .ring{position:absolute;border-radius:50%;width:auto;height:auto}
+  /* header band + footer of inner pages */
+  .ph{position:relative;background:#07503A;color:#fff;border-bottom:2.2mm solid #C6F25A;overflow:hidden;flex:none}
+  .ph-in{position:relative;display:flex;align-items:center;gap:5mm;padding:10mm 16mm 7mm}
+  .tag{flex:none;background:#C6F25A;color:#1C2B05;font-family:var(--display);font-weight:800;font-size:15pt;border-radius:3.5mm;min-width:13mm;height:13mm;display:grid;place-items:center;padding:0 3mm}
+  .ph h2{font-family:var(--display);font-size:17pt;font-weight:700;margin:0;line-height:1.5;flex:1}
+  .ph .who{flex:none;font-size:9pt;line-height:1.75;text-align:end;opacity:.9}
+  .pb{flex:1;min-height:0;overflow:hidden;padding:9mm 16mm 5mm;display:flex;flex-direction:column;gap:6mm}
+  .pf{flex:none;margin:0 16mm;padding:3mm 0 8mm;border-top:.35mm solid #CFE0D7;display:flex;align-items:center;justify-content:space-between;font-size:9pt;color:#5B6F68}
+  .pf b{width:9mm;height:9mm;border-radius:50%;background:#07503A;color:#fff;display:grid;place-items:center;font-family:var(--display);font-size:10pt}
+  /* evidence */
+  .pg{display:grid;gap:6mm;align-content:start}
   .g1,.g2{grid-template-columns:1fr}
   .g4{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .pp figure{margin:0;display:block;min-width:0;border:.3mm solid #cfd8d3;border-radius:3mm;padding:3mm;overflow:hidden}
-  .pp figure img{width:100%;height:94mm;object-fit:contain;display:block;margin-bottom:2mm}
-  .g1 figure img{height:212mm}
-  .pp figcaption{font-size:11pt;font-weight:600;text-align:center;line-height:1.5}
-  .pp figcaption small{display:block;font-weight:400;color:#555;font-size:9pt}
-  .cover{grid-template-rows:auto auto minmax(0,1fr) auto}
-  .cv-top{display:flex;justify-content:space-between;font-size:11pt;line-height:1.9;border-bottom:1mm solid #0A6B4D;padding-bottom:4mm}
-  .cv-title{text-align:center;padding:10mm 0 4mm}
-  .cv-title h1{font-family:var(--display);font-size:28pt;color:#07503A;margin:0 0 3mm}
-  .cv-title p{margin:0;font-size:14pt}
-  .cv-title .nm{font-family:var(--display);font-size:18pt;font-weight:700;margin-top:6mm}
-  .cv-mid{min-height:0}
-  .cv-table{width:100%;border-collapse:collapse;font-size:11pt}
-  .cv-table th,.cv-table td{border:.3mm solid #b9c7c0;padding:2.2mm 3mm;text-align:start}
-  .cv-table th{background:#0A6B4D;color:#fff;font-weight:600}
-  .cv-table td.c{text-align:center;font-variant-numeric:tabular-nums;width:22mm}
-  .pp-body{min-height:0;font-size:13pt}
-  .intro p{margin:0 0 6mm;line-height:2.2;text-align:justify}
-  .info{width:100%;border-collapse:collapse;font-size:13pt}
-  .info th,.info td{border:.3mm solid #b9c7c0;padding:4mm;text-align:start}
-  .info th{background:#E2F2EA;width:50mm;font-weight:600;color:#07503A}
-  .pp-foot span:nth-child(2){font-weight:700;color:#07503A}
-  .cover2{grid-template-rows:auto minmax(0,1fr) auto;border:1.2mm solid #0A6B4D;border-radius:6mm;padding:9mm}
-  .cover2 .cv-top{font-weight:600}
-  .cv-mid2{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10mm;text-align:center;min-height:0}
-  .cv-band{background:#0A6B4D;color:#fff;border-radius:6mm;padding:12mm 8mm;width:100%}
-  .cv-band h1{font-family:var(--display);font-size:30pt;margin:0;line-height:1.5}
-  .cv-band p{margin:2mm 0 0;font-size:15pt}
-  .cv-lbl{font-size:12pt;color:#555}
-  .cv-name{font-family:var(--display);font-size:22pt;font-weight:700;color:#07503A;line-height:1.8}
-  .cv-sub{font-size:13pt}
-  .cv-bot{display:flex;justify-content:space-between;font-size:11pt;border-top:.4mm solid #0A6B4D;padding-top:3mm}
-  .qr{width:32mm;height:32mm;image-rendering:pixelated}
-  .qr-box{display:flex;flex-direction:column;align-items:center;gap:2mm;font-size:9.5pt;color:#444}
-  .div-mid{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7mm;text-align:center;min-height:0;border:1mm solid #0A6B4D;border-radius:6mm;padding:10mm}
-  .div-num{font-family:var(--display);font-size:80pt;font-weight:800;color:#0A6B4D;line-height:1}
-  .div-mid h2{font-family:var(--display);font-size:26pt;margin:0;line-height:1.6;color:#07503A}
-  .div-chips{display:flex;gap:4mm;font-size:13pt}
-  .div-chips span{background:#E2F2EA;border-radius:99mm;padding:1.5mm 6mm}
-  .cv-sign{display:flex;justify-content:space-between;font-size:11pt;padding:0 6mm 4mm}
-  .cv-sign div{text-align:center;line-height:2.4}
+  .fg{position:relative;margin:0;border:.45mm solid #CFE0D7;border-radius:4.5mm;overflow:hidden;background:#fff;min-width:0}
+  .fg img{display:block;width:100%;height:92mm;object-fit:contain;background:#F3F8F5}
+  .g1 .fg img{height:202mm}
+  .fg .no{position:absolute;top:0;inset-inline-start:0;background:#07503A;color:#fff;font-size:9pt;font-weight:700;padding:1.2mm 4mm;border-end-end-radius:3.5mm}
+  .fg figcaption{display:flex;justify-content:space-between;align-items:center;gap:4mm;background:#E8F4EE;border-top:.45mm solid #CFE0D7;padding:2.6mm 4.5mm;font-size:10.5pt;font-weight:600;line-height:1.5}
+  .fg figcaption small{flex:none;font-weight:500;font-size:8.5pt;color:#5B6F68;white-space:nowrap}
+  /* cover */
+  .cv{background:#07503A;color:#fff}
+  .cv-top{position:relative;display:flex;justify-content:space-between;align-items:flex-start;padding:15mm 16mm 0;font-size:11.5pt;font-weight:600;line-height:1.9}
+  .cv-year{background:#C6F25A;color:#1C2B05;font-family:var(--display);font-weight:800;font-size:12pt;border-radius:99mm;padding:1.5mm 6mm;line-height:1.6}
+  .cv-main{position:relative;flex:1;display:flex;flex-direction:column;justify-content:center;padding:0 16mm}
+  .cv-eye{color:#C6F25A;font-weight:600;font-size:13pt;letter-spacing:.3mm}
+  .cv-main h1{font-family:var(--display);font-weight:800;font-size:50pt;line-height:1.35;margin:3mm 0 0}
+  .cv-main h1 span{display:block;color:#C6F25A}
+  .cv-bar{width:34mm;height:2.6mm;border-radius:2mm;background:#C6F25A;margin:7mm 0 6mm}
+  .cv-main p{margin:0;font-size:13pt;line-height:1.9;max-width:104mm;opacity:.92}
+  .cv-card{position:relative;margin:0 16mm 10mm;background:#fff;color:#10261F;border-radius:6mm;padding:8mm 9mm;display:flex;align-items:center;gap:8mm}
+  .cv-card .info{flex:1;display:grid;grid-template-columns:1fr 1fr;gap:5mm 8mm}
+  .cv-card .full{grid-column:1/-1;border-bottom:.35mm solid #CFE0D7;padding-bottom:4mm}
+  .lb{font-size:9pt;color:#5B6F68;font-weight:600}
+  .cv-name{font-family:var(--display);font-weight:800;font-size:22pt;color:#07503A;line-height:1.6}
+  .vl{font-size:12pt;font-weight:600;line-height:1.6}
+  .cv-foot{position:relative;text-align:center;font-size:9.5pt;opacity:.8;padding-bottom:9mm}
+  .qr{width:30mm;height:30mm;image-rendering:pixelated;display:block}
+  .qr-box{flex:none;display:flex;flex-direction:column;align-items:center;gap:1.5mm;font-size:8pt;color:#5B6F68;text-align:center;max-width:34mm}
+  /* data page */
+  .stats3{display:grid;grid-template-columns:repeat(3,1fr);gap:5mm}
+  .st{background:#07503A;color:#fff;border-radius:5mm;padding:6mm 6mm 5mm}
+  .st b{display:block;font-family:var(--display);font-weight:800;font-size:30pt;color:#C6F25A;line-height:1.1}
+  .st span{font-size:10.5pt}
+  .cards{display:grid;grid-template-columns:1fr 1fr;gap:5mm}
+  .dc{border:.45mm solid #CFE0D7;border-inline-start:2.2mm solid #0A6B4D;border-radius:4mm;padding:4.5mm 6mm}
+  .dc.w{grid-column:1/-1}
+  .dc .vl{font-size:14pt;margin-top:1mm}
+  .sec{font-family:var(--display);font-weight:700;font-size:13pt;color:#07503A;display:flex;align-items:center;gap:3mm;margin:0}
+  .sec::before{content:"";width:8mm;height:2.2mm;border-radius:2mm;background:#C6F25A}
+  /* intro + closing text */
+  .bsm{text-align:center;font-family:var(--display);font-weight:700;font-size:17pt;color:#07503A;display:flex;align-items:center;justify-content:center;gap:5mm}
+  .bsm::before,.bsm::after{content:"";width:22mm;height:.6mm;background:#C6F25A}
+  .txt{background:#F3F8F5;border-radius:5mm;border-inline-start:2.6mm solid #C6F25A;padding:9mm 10mm 4mm}
+  .txt p{margin:0 0 6mm;font-size:13.5pt;line-height:2.25;text-align:justify}
+  .by{align-self:flex-end;text-align:center;font-size:11pt;line-height:1.9;color:#5B6F68}
+  .by b{display:block;font-family:var(--display);font-size:14pt;color:#07503A}
+  /* index */
+  .ix-h,.ix-r{display:flex;align-items:center;gap:4mm}
+  .ix-h{font-size:9pt;color:#5B6F68;font-weight:600;padding-bottom:2mm;border-bottom:.6mm solid #07503A}
+  .ix-r{padding:3.1mm 0;border-bottom:.3mm dashed #BFD3C8}
+  .ix-n{flex:none;width:10mm;height:10mm;border-radius:3mm;background:#07503A;color:#fff;display:grid;place-items:center;font-family:var(--display);font-weight:700;font-size:11pt}
+  .ix-t{flex:1;font-size:12.5pt;font-weight:600;line-height:1.5}
+  .ix-w{flex:none;width:16mm;text-align:center;font-size:10pt;color:#5B6F68}
+  .ix-c{flex:none;width:24mm;text-align:center}
+  .ix-c span{display:inline-block;background:#E8F4EE;color:#07503A;border-radius:99mm;padding:.6mm 3.5mm;font-size:9.5pt;font-weight:700}
+  .ix-p{flex:none;width:14mm;text-align:center;font-family:var(--display);font-weight:800;font-size:13pt;color:#07503A}
+  .ix-r.off .ix-n{background:#E3EAE6;color:#8A9A93}
+  .ix-r.off .ix-t{color:#8A9A93;font-weight:500}
+  .ix-r.off .ix-c span{background:none;color:#8A9A93;font-weight:500}
+  .ix-r.off .ix-p{color:#B5C2BC}
+  /* section opener */
+  .dv{background:#07503A;color:#fff}
+  .dv-top{position:relative;display:flex;justify-content:space-between;padding:15mm 16mm 0;font-size:10.5pt;opacity:.9}
+  .dv-main{position:relative;flex:1;display:flex;flex-direction:column;justify-content:center;padding:0 16mm}
+  .dv-num{font-family:var(--display);font-weight:800;font-size:170pt;line-height:.95;color:transparent;-webkit-text-stroke:1.1mm #C6F25A}
+  .dv-main h2{font-family:var(--display);font-weight:800;font-size:32pt;line-height:1.5;margin:4mm 0 0;max-width:150mm}
+  .dv-chips{display:flex;gap:4mm;margin-top:7mm;font-size:12pt;font-weight:600}
+  .dv-chips span{border-radius:99mm;padding:1.4mm 6mm;border:.5mm solid rgba(255,255,255,.55)}
+  .dv-chips span:first-child{background:#C6F25A;border-color:#C6F25A;color:#1C2B05}
+  .dv-card{position:relative;margin:0 16mm 14mm;background:rgba(255,255,255,.08);border:.4mm solid rgba(255,255,255,.22);border-radius:6mm;padding:7mm 8mm;display:flex;gap:8mm;align-items:center}
+  .dv-card .lst{flex:1}
+  .dv-card h3{margin:0 0 3mm;font-size:10.5pt;color:#C6F25A;font-weight:600}
+  .dv-card ol{margin:0;padding:0;list-style:none;columns:2;column-gap:8mm;font-size:11pt;line-height:2}
+  .dv-card li{break-inside:avoid;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .dv-card li b{color:#C6F25A;font-family:var(--display);margin-inline-end:2mm}
+  .dv-card .qr-box{background:#fff;border-radius:4mm;padding:3mm}
+  /* signatures */
+  .signs{display:grid;grid-template-columns:1fr 1fr;gap:6mm}
+  .sg{border:.45mm solid #CFE0D7;border-radius:5mm;padding:6mm 7mm}
+  .sg .vl{font-size:14pt;margin:1mm 0 9mm}
+  .sg .ln{border-bottom:.4mm dotted #5B6F68;height:8mm;margin-bottom:1.5mm}
+  .stamp{align-self:center;width:36mm;height:36mm;border-radius:50%;border:.6mm dashed #9DB3A8;display:grid;place-items:center;color:#9DB3A8;font-size:10pt}
 }
 </style>
 </head>
@@ -360,7 +406,7 @@ function renderHome(){
       </button>`}).join("")}
       <button class="tile add" data-a="addel">${svg(IC.plus)}<span>إضافة عنصر</span></button>
     </div>
-    <p class="ver">الإصدار 5</p>
+    <p class="ver">الإصدار 6</p>
   </div>`;
 }
 $("#home").addEventListener("click",e=>{
@@ -494,41 +540,60 @@ function buildPrint(onlyId){
   if(!targets.length){$("#printRoot").innerHTML="";return 0}
   let pn=full?5:1;const start={};
   for(const e of targets){start[e.id]=pn;pn+=(full?1:0)+Math.ceil(ofEl(e.id).length/per)}
-  const foot=n=>`<div class="pp-foot"><span>${esc(S.school)}</span><span>${n}</span><span>العام الدراسي ${esc(S.year)}</span></div>`;
-  const head=t=>`<div class="pp-head"><b>${t}</b><span>${esc(S.name)}</span></div>`;
+  const today=hijri(Date.now());
+  const foot=n=>`<div class="pf"><span>${esc(S.school)}</span><b>${n}</b><span>ملف شواهد الأداء الوظيفي ${esc(S.year)}</span></div>`;
+  const head=(tag,t)=>`<div class="ph"><div class="lat"></div><div class="ph-in"><span class="tag">${tag}</span><h2>${t}</h2><div class="who">${esc(S.name)}<br>${esc(S.subject)}</div></div></div>`;
+  const page=(tag,t,body,n)=>`<section class="pp">${head(tag,t)}<div class="pb">${body}</div>${foot(n)}</section>`;
+  const ring=(css)=>`<i class="ring" style="${css}"></i>`;
   let pages="",count=0,n=1;
   if(full){
     const qr=qrImg(S.link);
-    pages+=`<section class="pp cover2">
-     <div class="cv-top"><div>المملكة العربية السعودية<br>وزارة التعليم<br>${esc(S.admin)}<br>${esc(S.school)}</div><div style="text-align:end">العام الدراسي<br>${esc(S.year)}</div></div>
-     <div class="cv-mid2"><div class="cv-band"><h1>ملف شواهد الأداء الوظيفي</h1><p>للعام الدراسي ${esc(S.year)}</p></div>
-       <div><div class="cv-lbl">إعداد المعلم</div><div class="cv-name">${esc(S.name)}</div><div class="cv-sub">${esc(S.subject)}</div></div>
-       ${qr?`<div class="qr-box">${qr}<span>امسح الباركود لفتح النسخة الإلكترونية</span></div>`:""}</div>
-     <div class="cv-bot"><span>مدير المدرسة: ${esc(S.principal||"....................")}</span><span>${esc(hijri(Date.now()))}</span></div>
-    </section>`;
-    const row=(k,v)=>`<tr><th>${k}</th><td>${esc(v||"")}</td></tr>`;
-    pages+=`<section class="pp">${head("بيانات المعلم")}<div class="pp-body"><table class="info"><tbody>
-      ${row("اسم المعلم",S.name)}${row("المادة والصف",S.subject)}${row("المدرسة",S.school)}${row("إدارة التعليم",S.admin)}${row("مدير المدرسة",S.principal)}${row("العام الدراسي",S.year)}
-      ${row("عدد عناصر الأداء",els.length)}${row("إجمالي الشواهد",evs.length)}${row("تاريخ إعداد الملف",hijri(Date.now()))}
-      </tbody></table></div>${foot(2)}</section>`;
-    pages+=`<section class="pp">${head("المقدمة")}<div class="pp-body intro">${esc(introText()).split(/\n+/).map(x=>`<p>${x}</p>`).join("")}</div>${foot(3)}</section>`;
-    pages+=`<section class="pp">${head("الفهرس")}<div class="pp-body"><table class="cv-table"><thead><tr><th style="width:12mm">م</th><th>عنصر الأداء</th><th>الوزن</th><th>عدد الشواهد</th><th>الصفحة</th></tr></thead><tbody>
-      ${els.map((e,k)=>`<tr><td class="c">${k+1}</td><td>${esc(e.t)}</td><td class="c">${e.w?e.w+"%":"-"}</td><td class="c">${ofEl(e.id).length}</td><td class="c">${start[e.id]||"-"}</td></tr>`).join("")}
-      <tr><td class="c"></td><td>الخاتمة والاعتماد</td><td class="c"></td><td class="c"></td><td class="c">${pn}</td></tr>
-      </tbody></table></div>${foot(4)}</section>`;
+    pages+=`<section class="pp cv"><div class="lat"></div>
+      ${ring("width:190mm;height:190mm;left:-128mm;top:52mm;border:13mm solid rgba(198,242,90,.92)")}
+      ${ring("width:104mm;height:104mm;left:-85mm;top:95mm;border:5mm solid rgba(255,255,255,.2)")}
+      ${ring("width:46mm;height:46mm;left:22mm;top:24mm;background:rgba(255,255,255,.07)")}
+      <div class="cv-top"><div>المملكة العربية السعودية<br>وزارة التعليم<br>${esc(S.admin)}<br>${esc(S.school)}</div><div class="cv-year">${esc(S.year)}</div></div>
+      <div class="cv-main"><div class="cv-eye">العام الدراسي ${esc(S.year)}</div><h1>ملف شواهد<span>الأداء الوظيفي</span></h1><div class="cv-bar"></div>
+        <p>توثيق أعمال المعلم وإنجازاته وفق عناصر تقييم الأداء الوظيفي لشاغلي الوظائف التعليمية.</p></div>
+      <div class="cv-card"><div class="info">
+        <div class="full"><div class="lb">إعداد المعلم</div><div class="cv-name">${esc(S.name)}</div></div>
+        <div><div class="lb">المادة والصف</div><div class="vl">${esc(S.subject||"-")}</div></div>
+        <div><div class="lb">مدير المدرسة</div><div class="vl">${esc(S.principal||"....................")}</div></div>
+        </div>${qr?`<div class="qr-box">${qr}<span>امسح الباركود لفتح النسخة الإلكترونية</span></div>`:""}</div>
+      <div class="cv-foot">${esc(today)}</div></section>`;
+    const dc=(k,v,w)=>`<div class="dc${w?" w":""}"><div class="lb">${k}</div><div class="vl">${esc(v||"-")}</div></div>`;
+    pages+=page("أ","بيانات المعلم",`
+      <div class="stats3"><div class="st"><b>${evs.length}</b><span>إجمالي الشواهد</span></div><div class="st"><b>${targets.length}</b><span>عناصر موثقة</span></div><div class="st"><b>${els.length}</b><span>عناصر الأداء</span></div></div>
+      <h3 class="sec">البيانات الأساسية</h3>
+      <div class="cards">${dc("اسم المعلم",S.name,1)}${dc("المادة والصف",S.subject)}${dc("العام الدراسي",S.year)}${dc("المدرسة",S.school,1)}${dc("إدارة التعليم",S.admin,1)}${dc("مدير المدرسة",S.principal)}${dc("تاريخ إعداد الملف",today)}</div>`,2);
+    pages+=page("ب","المقدمة",`<div class="bsm">بسم الله الرحمن الرحيم</div>
+      <div class="txt">${esc(introText()).split(/\n+/).map(x=>`<p>${x}</p>`).join("")}</div>
+      <div class="by">المعلم<b>${esc(S.name)}</b></div>`,3);
+    pages+=page("ج","فهرس المحتويات",`<div><div class="ix-h"><span style="width:10mm">م</span><span style="flex:1">عنصر الأداء</span><span class="ix-w">الوزن</span><span class="ix-c">الشواهد</span><span class="ix-p" style="font:inherit;color:inherit">الصفحة</span></div>
+      ${els.map((e,k)=>{const c=ofEl(e.id).length;return `<div class="ix-r${c?"":" off"}"><span class="ix-n">${k+1}</span><span class="ix-t">${esc(e.t)}</span><span class="ix-w">${e.w?e.w+"%":"-"}</span><span class="ix-c"><span>${c?plural(c):"لا يوجد"}</span></span><span class="ix-p">${start[e.id]||"-"}</span></div>`}).join("")}
+      <div class="ix-r"><span class="ix-n" style="background:#C6F25A;color:#1C2B05">✓</span><span class="ix-t">الخاتمة والاعتماد</span><span class="ix-w"></span><span class="ix-c"></span><span class="ix-p">${pn}</span></div></div>`,4);
     n=5;
   }
   for(const e of targets){const list=ofEl(e.id);const idx=els.findIndex(x=>x.id===e.id)+1;const np=Math.ceil(list.length/per);
-    if(full){const qr=qrImg(S.links[e.id]);
-      pages+=`<section class="pp divp"><div></div><div class="div-mid"><div class="div-num">${pad(idx)}</div><h2>${esc(e.t)}</h2>
-        <div class="div-chips">${e.w?`<span>الوزن ${e.w}%</span>`:""}<span>${plural(list.length)}</span></div>
-        ${qr?`<div class="qr-box">${qr}<span>امسح الباركود لفتح شواهد هذا العنصر</span></div>`:""}</div>${foot(n++)}</section>`}
+    if(full){const qr=qrImg(S.links[e.id]);const caps=list.slice(0,8);
+      pages+=`<section class="pp dv"><div class="lat"></div>
+        ${ring("width:150mm;height:150mm;left:-70mm;top:-60mm;border:10mm solid rgba(255,255,255,.1)")}
+        ${ring("width:60mm;height:60mm;left:18mm;top:150mm;background:rgba(198,242,90,.12)")}
+        <div class="dv-top"><span>ملف شواهد الأداء الوظيفي</span><span>${esc(S.name)}</span></div>
+        <div class="dv-main"><div class="dv-num">${pad(idx)}</div><h2>${esc(e.t)}</h2>
+          <div class="dv-chips">${e.w?`<span>الوزن ${e.w}%</span>`:""}<span>${plural(list.length)}</span><span>صفحة ${n+1}</span></div></div>
+        <div class="dv-card"><div class="lst"><h3>شواهد هذا العنصر</h3><ol>${caps.map((v,k)=>`<li><b>${k+1}</b>${esc(v.cap||"شاهد "+(k+1))}</li>`).join("")}${list.length>8?`<li>وشواهد أخرى (${list.length-8})</li>`:""}</ol></div>
+          ${qr?`<div class="qr-box">${qr}<span>امسح لفتح شواهد العنصر</span></div>`:""}</div>
+        </section>`;n++}
     for(let p=0;p<np;p++){const chunk=list.slice(p*per,p*per+per);count+=chunk.length;
-      pages+=`<section class="pp">${head(idx+". "+esc(e.t))}
-       <div class="pp-grid g${per}">${chunk.map(v=>`<figure><img src="${pSrc(v)}" alt=""><figcaption>${esc(v.cap||"شاهد")}<small>${esc(hijri(v.ts))}</small></figcaption></figure>`).join("")}</div>${foot(n++)}</section>`}}
+      pages+=page(pad(idx),esc(e.t),`<div class="pg g${per}">${chunk.map((v,k)=>`<figure class="fg"><span class="no">شاهد ${p*per+k+1}</span><img src="${pSrc(v)}" alt=""><figcaption><span>${esc(v.cap||"شاهد "+(p*per+k+1))}</span><small>${esc(hijri(v.ts))}</small></figcaption></figure>`).join("")}</div>`,n++)}}
   if(full){
-    pages+=`<section class="pp">${head("الخاتمة والاعتماد")}<div class="pp-body intro"><p>تم بحمد الله إعداد ملف شواهد الأداء الوظيفي للعام الدراسي ${esc(S.year)}، ويضم ${evs.length} من الشواهد موزعة على ${targets.length} من عناصر الأداء.</p><p>أقر بأن جميع الشواهد الواردة في هذا الملف صحيحة وتمثل أعمالا نفذتها خلال العام الدراسي.</p>
-      <div class="cv-sign" style="margin-top:25mm"><div>المعلم<br>${esc(S.name)}<br>التوقيع: ....................</div><div>مدير المدرسة<br>${esc(S.principal||"....................")}<br>التوقيع: ....................<br>الختم</div></div></div>${foot(n)}</section>`;
+    pages+=page("✓","الخاتمة والاعتماد",`
+      <div class="txt"><p>تم بحمد الله إعداد ملف شواهد الأداء الوظيفي للعام الدراسي ${esc(S.year)}، ويضم ${evs.length} من الشواهد موزعة على ${targets.length} من عناصر الأداء.</p><p>أقر بأن جميع الشواهد الواردة في هذا الملف صحيحة، وتمثل أعمالا نفذتها خلال العام الدراسي.</p></div>
+      <h3 class="sec">الاعتماد</h3>
+      <div class="signs"><div class="sg"><div class="lb">المعلم</div><div class="vl">${esc(S.name)}</div><div class="ln"></div><div class="lb">التوقيع</div></div>
+        <div class="sg"><div class="lb">مدير المدرسة</div><div class="vl">${esc(S.principal||"....................")}</div><div class="ln"></div><div class="lb">التوقيع</div></div></div>
+      <div class="stamp">الختم</div>`,n);
   }
   $("#printRoot").innerHTML=pages;return count;
 }

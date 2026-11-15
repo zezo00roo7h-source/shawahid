@@ -156,6 +156,9 @@ img{max-width:100%}
 .seg button[aria-pressed="true"]{background:var(--brand);border-color:var(--brand);color:#fff}
 .row{display:flex;gap:10px;flex-wrap:wrap}
 .row .btn{flex:1 1 130px}
+.gedit{border:1.5px solid var(--line);border-radius:12px;padding:10px;display:flex;flex-direction:column;gap:8px;margin-bottom:8px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.gedit button{align-self:flex-start;color:var(--danger);font-weight:600;font-size:13px;min-height:32px}
 .logos{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .logo-slot{border:1.5px dashed var(--line);border-radius:12px;padding:10px;display:flex;flex-direction:column;align-items:center;gap:8px;font-size:13px;color:var(--muted)}
 .logo-slot img{height:56px;max-width:100%;object-fit:contain;background:#fff;border-radius:8px;padding:4px}
@@ -241,6 +244,22 @@ img{max-width:100%}
   .txt p{margin:0 0 6mm;font-size:13.5pt;line-height:2.25;text-align:justify}
   .by{align-self:flex-end;text-align:center;font-size:11pt;line-height:1.9;color:#5B6F68}
   .by b{display:block;font-family:var(--display);font-size:14pt;color:var(--p-deep)}
+  .verse{background:var(--p-deep);color:#fff;border-radius:5mm;padding:7mm 9mm;text-align:center;font-size:14.5pt;line-height:2.2;font-weight:500}
+  .verse small{display:block;color:var(--p-acc);font-size:10.5pt;font-weight:600;margin-bottom:1mm}
+  .vm{border:.45mm solid var(--p-line);border-radius:5mm;overflow:hidden}
+  .vm h3{margin:0;background:var(--p-deep);color:#fff;font-family:var(--display);font-size:15pt;padding:3.5mm 8mm;border-bottom:1.6mm solid var(--p-acc)}
+  .vm p{margin:0;padding:8mm 9mm;font-size:14pt;line-height:2.3;text-align:justify;background:var(--p-tint2)}
+  .goals{display:flex;flex-direction:column;gap:5mm}
+  .goal{display:flex;border:.45mm solid var(--p-line);border-radius:5mm;overflow:hidden}
+  .gn{flex:none;width:17mm;background:var(--p-deep);color:var(--p-acc);font-family:var(--display);font-weight:800;font-size:24pt;display:grid;place-items:center}
+  .gb{flex:1;min-width:0;padding:5mm 6mm 4.5mm}
+  .gb p{margin:0 0 3.5mm;font-size:12.5pt;font-weight:600;line-height:1.9}
+  .gm{display:flex;flex-wrap:wrap;gap:3mm;font-size:10pt;color:#5B6F68}
+  .gm span{background:var(--p-tint);border-radius:99mm;padding:.8mm 4.5mm}
+  .gm b{color:var(--p-deep)}
+  .gtot{display:grid;grid-template-columns:1fr 1fr;gap:5mm}
+  .gtot div{background:var(--p-deep);color:#fff;border-radius:5mm;padding:5mm 6mm;display:flex;align-items:center;justify-content:space-between;gap:4mm;font-size:11pt}
+  .gtot b{font-family:var(--display);font-size:20pt;color:var(--p-acc)}
   /* index */
   .ix-h,.ix-r{display:flex;align-items:center;gap:4mm}
   .ix-h{font-size:9pt;color:#5B6F68;font-weight:600;padding-bottom:2mm;border-bottom:.6mm solid var(--p-deep)}
@@ -1601,7 +1620,7 @@ const plural=n=>n===0?"بدون شواهد":n===1?"شاهد واحد":n===2?"ش�
 let framed=false;try{framed=window.self!==window.top}catch(e){framed=true}
 
 /* ---------- settings ---------- */
-const DEF={name:"زاهر الزهراني",school:"ابتدائية عمرو بن سالم الخزاعي",admin:"الإدارة العامة للتعليم بمنطقة مكة المكرمة",subject:"العلوم - الصف الأول الابتدائي",year:"1448هـ",principal:"",titles:{},custom:[],per:2,cover:true,seeded:false,intro:"",link:"",links:{},logoR:"",logoL:"",mode:"full",title:"ملف شواهد الأداء الوظيفي",role:"المعلم",subLabel:"المادة والصف",bossLabel:"مدير المدرسة",base:true,theme:"green"};
+const DEF={name:"زاهر الزهراني",school:"ابتدائية عمرو بن سالم الخزاعي",admin:"الإدارة العامة للتعليم بمنطقة مكة المكرمة",subject:"العلوم - الصف الأول الابتدائي",year:"1448هـ",principal:"",titles:{},custom:[],per:2,cover:true,seeded:false,intro:"",link:"",links:{},logoR:"",logoL:"",mode:"full",title:"ملف شواهد الأداء الوظيفي",role:"المعلم",subLabel:"المادة والصف",bossLabel:"مدير المدرسة",base:true,theme:"green",verse:"",vision:"",mission:"",qual:"",spec:"",goals:[],goalRating:""};
 const SECS=[["السيرة الذاتية والمؤهلات",["الشهادة","قرار التعيين","بطاقة العمل"],0],["المهام والتكليفات",["خطاب التكليف","توزيع المهام","اللجان"],5],["الانضباط الوظيفي",["سجل الحضور","بيان الدوام"],8],["متابعة الغياب والأعذار",["كشوف الغياب","نماذج الأعذار","الإحصائيات"],9],["السجلات والأعمال الإدارية",["السجلات","الصادر والوارد","التعاميم"],10],["الأنظمة الإلكترونية",["نظام نور","المنصات"],6],["التواصل مع أولياء الأمور",["الرسائل","الإشعارات","محاضر الاتصال"],2],["الدورات والتطوير المهني",["شهادات الدورات","ورش العمل"],1],["المبادرات والأعمال التطوعية",["المبادرات","الفعاليات"],7],["شهادات الشكر والتقدير",["شهادات الشكر","خطابات التقدير"],4]];
 const newFileS=()=>Object.assign({},DEF,{name:"",school:"",admin:"",subject:"",principal:"",titles:{},links:{},seeded:true,title:"ملف الإنجاز",role:"الموظفة",subLabel:"المسمى الوظيفي",bossLabel:"مديرة المدرسة",base:false,theme:"sky",custom:SECS.map((x,k)=>({id:"s"+(k+1),t:x[0],h:x[1],i:ELS[x[2]].i}))});
 const THEMES={green:{n:"أخضر",deep:"#07503A",brand:"#0A6B4D",acc:"#C6F25A",on:"#1C2B05"},sky:{n:"أزرق هادئ",deep:"#2F4B66",brand:"#46688A",acc:"#CFE3F2",on:"#1E3347"},sage:{n:"زيتي هادئ",deep:"#3F5E5A",brand:"#5A7F7A",acc:"#D8EBE4",on:"#25403C"},lav:{n:"لافندر",deep:"#4A4A72",brand:"#66669A",acc:"#DEDCF3",on:"#2E2E52"}};
@@ -1629,7 +1648,7 @@ const linkOf=id=>S.links[id]||S.link||"";
 function saveS(){try{localStorage.setItem(sKey(P.cur),JSON.stringify(S))}catch(e){}}
 function allEls(){
   return (isFile()?[]:ELS.map(e=>Object.assign({},e,{t:S.titles[e.id]||e.t})))
-    .concat(S.custom.map(c=>({id:c.id,t:c.t,w:null,h:c.h||[],i:c.i||CUSTOM_ICON,custom:true})));
+    .concat(S.custom.map(c=>({id:c.id,t:c.t,w:c.w||null,h:c.h||[],i:c.i||CUSTOM_ICON,custom:true})));
 }
 
 /* ---------- storage ---------- */
@@ -1722,7 +1741,7 @@ function renderHome(){
       </button>`}).join("")}
       <button class="tile add" data-a="addel">${svg(IC.plus)}<span>إضافة عنصر</span></button>
     </div>
-    <p class="ver">الإصدار 10</p>
+    <p class="ver">الإصدار 11</p>
   </div>`;
 }
 $("#home").addEventListener("click",e=>{
@@ -1815,14 +1834,33 @@ function settingsSheet(){
    <div class="field"><label for="s-link">رابط الملف الإلكتروني (يظهر باركود في الغلاف)</label><input id="s-link" value="${esc(S.link)}" placeholder="اختياري: رابط مجلد الشواهد" inputmode="url" dir="ltr" autocomplete="off"></div>
    <div class="field"><label>شعارات الغلاف (اختياري)</label><div class="logos">${["R","L"].map(k=>`<div class="logo-slot"><span>${k==="R"?"الشعار الأيمن":"الشعار الأيسر"}</span>${S["logo"+k]?`<img src="${S["logo"+k]}" alt=""><button type="button" data-rm="${k}">إزالة</button>`:`<label for="lg-${k}">اختيار صورة</label>`}<input id="lg-${k}" data-lg="${k}" type="file" accept="image/*" hidden></div>`).join("")}</div></div>
    <div class="field"><label for="s-intro">المقدمة</label><textarea id="s-intro">${esc(introText())}</textarea></div>
+   <button type="button" class="btn btn-line btn-block" id="s-extra">الرؤية والرسالة والأهداف والمؤهل</button>
    <div class="field"><label>لون الملف</label><div class="seg" id="s-theme" style="grid-auto-flow:row;grid-template-columns:1fr 1fr">${Object.keys(THEMES).map(k=>`<button type="button" data-v="${k}" aria-pressed="${(S.theme||"green")===k}"><i style="display:inline-block;width:14px;height:14px;border-radius:50%;background:${THEMES[k].deep};border:2px solid ${THEMES[k].acc};vertical-align:-2px;margin-inline-end:6px"></i>${THEMES[k].n}</button>`).join("")}</div></div>
    <div class="row"><button class="btn btn-brand" id="s-save">حفظ</button>${P.cur!=="main"?`<button class="btn btn-danger" id="s-del">حذف هذا الملف</button>`:""}<button class="btn btn-line" id="s-x">إغلاق</button></div>`,s=>{
     s.querySelector("#s-theme").onclick=e=>{const b=e.target.closest("button");if(!b)return;S.theme=b.dataset.v;saveS();applyTheme();s.querySelectorAll("#s-theme button").forEach(x=>x.setAttribute("aria-pressed",x===b))};
+    s.querySelector("#s-extra").onclick=()=>extraSheet();
     const sd=s.querySelector("#s-del");if(sd)sd.onclick=()=>confirmSheet("حذف هذا الملف وكل شواهده؟","يُحذف الملف مع "+plural(evs.length)+" ولا يمكن استرجاعه.","حذف",async()=>{for(const v of evs){await dbDel(v.id);dropUrl(v.id)}evs=[];const id=P.cur;try{localStorage.removeItem(sKey(id))}catch(e){}P.list=P.list.filter(f=>f.id!==id);P.cur="main";saveP();S=loadS("main");evs=others.filter(v=>v.pf==="main");others=others.filter(v=>v.pf!=="main");applyTheme();back();renderHome()});
     s.querySelector("#s-x").onclick=()=>back();
     s.querySelectorAll("[data-lg]").forEach(i=>i.onchange=async()=>{const f=i.files[0];if(!f)return;try{S["logo"+i.dataset.lg]=await logoData(f);saveS();settingsSheet()}catch(e){toast("تعذر قراءة الشعار")}});
     s.querySelectorAll("[data-rm]").forEach(b=>b.onclick=()=>{S["logo"+b.dataset.rm]="";saveS();settingsSheet()});
     s.querySelector("#s-save").onclick=()=>{["name","role","subject","school","admin","principal","title","year","link","intro"].forEach(k=>S[k]=s.querySelector("#s-"+k).value.trim());saveS();back();renderHome();toast("تم حفظ البيانات")}})}
+function extraSheet(){
+  const goals=(S.goals||[]).map(g=>Object.assign({},g));
+  const ta=(k,l,h)=>`<div class="field"><label for="x-${k}">${l}</label><textarea id="x-${k}" style="min-height:${h}px">${esc(S[k])}</textarea></div>`;
+  const inp=(k,l)=>`<div class="field"><label for="x-${k}">${l}</label><input id="x-${k}" value="${esc(S[k])}" autocomplete="off"></div>`;
+  const draw=()=>openSheet(`<h3>صفحات إضافية</h3><p>الصفحة التي تتركها فارغة لا تُطبع.</p>
+   ${inp("qual","المؤهل التعليمي")}${inp("spec","التخصص")}${ta("verse","آية أو عبارة أعلى المقدمة",80)}${ta("vision","الرؤية",110)}${ta("mission","الرسالة",110)}
+   <div class="field"><label>الأهداف</label>${goals.map((g,k)=>`<div class="gedit"><textarea id="g-t-${k}" placeholder="نص الهدف" style="min-height:84px">${esc(g.t)}</textarea><div class="g3"><input id="g-s-${k}" value="${esc(g.std)}" placeholder="المعيار"><input id="g-w-${k}" value="${esc(g.w)}" placeholder="الوزن %" inputmode="numeric"><input id="g-r-${k}" value="${esc(g.res)}" placeholder="النتيجة"></div><button type="button" data-gd="${k}">حذف الهدف</button></div>`).join("")}
+   <button type="button" class="btn btn-line btn-block" id="g-add">إضافة هدف</button></div>
+   ${inp("goalRating","إجمالي التقدير الموزون للأهداف")}
+   <div class="row"><button class="btn btn-brand" id="x-save">حفظ</button><button class="btn btn-line" id="x-x">إغلاق</button></div>`,s=>{
+    const read=()=>{["qual","spec","verse","vision","mission","goalRating"].forEach(k=>S[k]=s.querySelector("#x-"+k).value.trim());goals.forEach((g,k)=>{g.t=s.querySelector("#g-t-"+k).value.trim();g.std=s.querySelector("#g-s-"+k).value.trim();g.w=s.querySelector("#g-w-"+k).value.trim();g.res=s.querySelector("#g-r-"+k).value.trim()})};
+    s.querySelector("#x-x").onclick=()=>back();
+    s.querySelector("#g-add").onclick=()=>{read();goals.push({t:"",std:"",w:"",res:""});draw()};
+    s.querySelectorAll("[data-gd]").forEach(b=>b.onclick=()=>{read();goals.splice(+b.dataset.gd,1);draw()});
+    s.querySelector("#x-save").onclick=()=>{read();S.goals=goals.filter(g=>g.t);saveS();back();toast("تم الحفظ")}});
+  draw();
+}
 function switchTo(id){if(id===P.cur||!P.list.some(f=>f.id===id))return;saveS();const all=others.concat(evs);P.cur=id;saveP();S=loadS(id);evs=all.filter(v=>v.pf===id);others=all.filter(v=>v.pf!==id);applyTheme();renderHome();window.scrollTo(0,0)}
 function newFileSheet(){
   openSheet(`<h3>ملف جديد</h3><p>ملف مستقل باسمه وبياناته وأقسامه وشواهده وطباعته. يُنشأ بعشرة أقسام جاهزة لملف الإنجاز، وتقدر تعدل أسماءها أو تحذفها أو تضيف عليها.</p>
@@ -1881,7 +1919,8 @@ function buildPrint(onlyId){
   const qm=full&&S.mode==="qr";
   const targets=(onlyId!=null?els.filter(e=>e.id===onlyId):els).filter(e=>ofEl(e.id).length||(qm&&linkOf(e.id)));
   if(!targets.length){$("#printRoot").innerHTML="";return 0}
-  let pn=full?5:1;const start={};
+  const hasVM=!!(S.vision||S.mission),hasG=!!(S.goals&&S.goals.length);const F=4+(hasVM?1:0)+(hasG?1:0);const LT=["أ","ب","ج","د","هـ","و"];let li=0;
+  let pn=full?F+1:1;const start={};
   for(const e of targets){start[e.id]=pn;pn+=qm?1:1+Math.ceil(ofEl(e.id).length/per)}
   const today=hijri(Date.now());const tw=(S.title||"الملف").trim().split(/\s+/),tk=tw.length<=2?1:2;const TL=[tw.slice(0,tk).join(" "),tw.slice(tk).join(" ")];
   const foot=n=>`<div class="pf"><span>${esc(S.school)}</span><b>${n}</b><span>${esc(S.title)} ${esc(S.year)}</span></div>`;
@@ -1905,18 +1944,23 @@ function buildPrint(onlyId){
         </div>${qr?`<div class="qr-box">${qr}<span>امسح الباركود لفتح النسخة الإلكترونية</span></div>`:""}</div>
       <div class="cv-foot">${esc(today)}</div></section>`;
     const dc=(k,v,w)=>`<div class="dc${w?" w":""}"><div class="lb">${k}</div><div class="vl">${esc(v||"-")}</div></div>`;
-    pages+=page("أ","بيانات "+esc(S.role),`
+    pages+=page(LT[li++],"بيانات "+esc(S.role),`
       <div class="stats3"><div class="st"><b>${evs.length}</b><span>إجمالي الشواهد</span></div><div class="st"><b>${targets.length}</b><span>عناصر موثقة</span></div><div class="st"><b>${els.length}</b><span>${NOUN()}</span></div></div>
       <h3 class="sec">البيانات الأساسية</h3>
-      <div class="cards">${dc("الاسم",S.name,1)}${dc(esc(S.subLabel),S.subject)}${dc("العام الدراسي",S.year)}${dc("المدرسة",S.school,1)}${dc("إدارة التعليم",S.admin,1)}${dc(esc(S.bossLabel),S.principal)}${dc("تاريخ إعداد الملف",today)}</div>`,2);
-    pages+=page("ب","المقدمة",`<div class="bsm">بسم الله الرحمن الرحيم</div>
+      <div class="cards">${dc("الاسم",S.name,1)}${dc(esc(S.subLabel),S.subject)}${dc("العام الدراسي",S.year)}${dc("المدرسة",S.school,1)}${dc("إدارة التعليم",S.admin,1)}${S.qual?dc("المؤهل التعليمي",S.qual):""}${S.spec?dc("التخصص",S.spec):""}${dc(esc(S.bossLabel),S.principal)}${dc("تاريخ إعداد الملف",today)}</div>`,2);
+    let fp=3;
+    pages+=page(LT[li++],"المقدمة",`${S.verse?`<div class="verse"><small>قال تعالى</small>${esc(S.verse)}</div>`:`<div class="bsm">بسم الله الرحمن الرحيم</div>`}
       <div class="txt">${esc(introText()).split(/\n+/).map(x=>`<p>${x}</p>`).join("")}</div>
-      <div class="by">${esc(S.role)}<b>${esc(S.name)}</b></div>`,3);
-    if(qm)pages+=page("ج","فهرس الباركودات",`<div class="qgrid">${els.map((e,k)=>{const q=qrImg(linkOf(e.id));const c=ofEl(e.id).length;return `<div class="qc${q?"":" off"}"><span class="ix-n">${k+1}</span>${q||`<div class="qr none">بدون رابط</div>`}<b>${esc(e.t)}</b><small>${c?plural(c):"لا يوجد"}${start[e.id]?" · صفحة "+start[e.id]:""}</small></div>`}).join("")}</div>`,4);
-    else pages+=page("ج","فهرس المحتويات",`<div><div class="ix-h"><span style="width:10mm">م</span><span style="flex:1">${isFile()?"القسم":"عنصر الأداء"}</span><span class="ix-w">الوزن</span><span class="ix-c">الشواهد</span><span class="ix-p" style="font:inherit;color:inherit">الصفحة</span></div>
+      <div class="by">${esc(S.role)}<b>${esc(S.name)}</b></div>`,fp++);
+    if(hasVM)pages+=page(LT[li++],"الرؤية والرسالة",`${S.vision?`<div class="vm"><h3>الرؤية</h3><p>${esc(S.vision)}</p></div>`:""}${S.mission?`<div class="vm"><h3>الرسالة</h3><p>${esc(S.mission)}</p></div>`:""}`,fp++);
+    if(hasG){const tw=S.goals.reduce((a,g)=>a+(parseFloat(g.w)||0),0);
+      pages+=page(LT[li++],"الأهداف",`<div class="goals">${S.goals.map((g,k)=>`<div class="goal"><span class="gn">${k+1}</span><div class="gb"><p>${esc(g.t)}</p><div class="gm">${g.std?`<span>المعيار: <b>${esc(g.std)}</b></span>`:""}${g.w?`<span>الوزن النسبي: <b>${esc(g.w)}%</b></span>`:""}${g.res?`<span>النتيجة: <b>${esc(g.res)}</b></span>`:""}</div></div></div>`).join("")}</div>
+      <div class="gtot">${tw?`<div><span>إجمالي الوزن النسبي للأهداف</span><b>${tw}%</b></div>`:""}${S.goalRating?`<div><span>إجمالي التقدير الموزون للأهداف</span><b>${esc(S.goalRating)}</b></div>`:""}</div>`,fp++)}
+    if(qm)pages+=page(LT[li++],"فهرس الباركودات",`<div class="qgrid">${els.map((e,k)=>{const q=qrImg(linkOf(e.id));const c=ofEl(e.id).length;return `<div class="qc${q?"":" off"}"><span class="ix-n">${k+1}</span>${q||`<div class="qr none">بدون رابط</div>`}<b>${esc(e.t)}</b><small>${c?plural(c):"لا يوجد"}${start[e.id]?" · صفحة "+start[e.id]:""}</small></div>`}).join("")}</div>`,F);
+    else pages+=page(LT[li++],"فهرس المحتويات",`<div><div class="ix-h"><span style="width:10mm">م</span><span style="flex:1">${isFile()?"القسم":"عنصر الأداء"}</span><span class="ix-w">الوزن</span><span class="ix-c">الشواهد</span><span class="ix-p" style="font:inherit;color:inherit">الصفحة</span></div>
       ${els.map((e,k)=>{const c=ofEl(e.id).length;return `<div class="ix-r${c?"":" off"}"><span class="ix-n">${k+1}</span><span class="ix-t">${esc(e.t)}</span><span class="ix-w">${e.w?e.w+"%":"-"}</span><span class="ix-c"><span>${c?plural(c):"لا يوجد"}</span></span><span class="ix-p">${start[e.id]||"-"}</span></div>`}).join("")}
-      <div class="ix-r"><span class="ix-n" style="background:var(--p-acc);color:var(--p-on)">✓</span><span class="ix-t">الخاتمة والاعتماد</span><span class="ix-w"></span><span class="ix-c"></span><span class="ix-p">${pn}</span></div></div>`,4);
-    n=5;
+      <div class="ix-r"><span class="ix-n" style="background:var(--p-acc);color:var(--p-on)">✓</span><span class="ix-t">الخاتمة والاعتماد</span><span class="ix-w"></span><span class="ix-c"></span><span class="ix-p">${pn}</span></div></div>`,F);
+    n=F+1;
   }
   if(qm){for(const e of targets){const list=ofEl(e.id);const idx=els.findIndex(x=>x.id===e.id)+1;const qr=qrImg(linkOf(e.id));const th=list.slice(0,6);count+=Math.max(1,list.length);
     pages+=page(pad(idx),esc(e.t),`<div class="qe"><div class="qe-qr">${qr||`<div class="qr none">أضف رابط العنصر من زر الباركودات</div>`}<b>امسح الباركود</b><span>لعرض شواهد هذا العنصر كاملة</span></div>
@@ -1961,7 +2005,7 @@ function backupSheet(){
       for(const e of real)out.evs.push({id:e.id,el:e.el,cap:e.cap,ts:e.ts,data:await b2d(e.blob)});
       try{const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify(out)],{type:"application/json"}));a.download="shawahid-backup.json";document.body.appendChild(a);a.click();a.remove();toast("تم تجهيز النسخة ("+real.length+")")}catch(e){toast("تعذر حفظ النسخة في هذا العرض")}};
     s.querySelector("#b-in").onchange=async e=>{const f=e.target.files[0];if(!f)return;
-      try{const o=JSON.parse(await f.text());if(o.app!=="shawahid"||!Array.isArray(o.evs))throw 0;let n=0;
+      try{const o=JSON.parse(await f.text());if(o.app!=="shawahid"||!Array.isArray(o.evs))throw 0;if(o.s&&(o.s.base===false)!==isFile()){toast(isFile()?"هذه النسخة لملف الشواهد. افتح ملفي أولا":"هذه النسخة لملف الإنجاز. افتح ملف الإنجاز أولا");return}let n=0;
         for(const x of o.evs){if(evs.some(v=>v.id===x.id)||others.some(v=>v.id===x.id))continue;const v={id:x.id,el:x.el,cap:x.cap||"",ts:x.ts,blob:d2b(x.data),pf:P.cur};if(await dbPut(v)){evs.push(v);n++}}
         if(o.s){S=Object.assign({},DEF,o.s,{seeded:true});saveS();applyTheme()}back();renderHome();toast("تم استرجاع "+n+" من الشواهد")}
       catch(_){toast("الملف غير صالح. اختر ملف النسخة الاحتياطية الصحيح")}}})}

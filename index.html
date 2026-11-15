@@ -209,6 +209,7 @@ img{max-width:100%}
   .cv-top{position:relative;display:flex;justify-content:space-between;align-items:flex-start;padding:15mm 16mm 0;font-size:11.5pt;font-weight:600;line-height:1.9}
   .cv-org{display:flex;align-items:flex-start;gap:5mm}
   .lg{flex:none;background:#fff;border-radius:4mm;padding:2.5mm;display:grid;place-items:center}
+  .lg.dk{background:var(--p-deep);border:.4mm solid var(--p-cardb)}
   .lg img{display:block;height:21mm;max-width:42mm;object-fit:contain}
   .cv-year{background:var(--p-acc);color:var(--p-on);font-family:var(--display);font-weight:800;font-size:12pt;border-radius:99mm;padding:1.5mm 6mm;line-height:1.6}
   .cv-main{position:relative;flex:1;display:flex;flex-direction:column;justify-content:center;padding:0 16mm}
@@ -1644,10 +1645,20 @@ function applyTheme(){const t=THEMES[S.theme]||THEMES.green,r=document.documentE
 applyTheme();
 function introText(){return S.intro||("الحمد لله رب العالمين، والصلاة والسلام على نبينا محمد وعلى آله وصحبه أجمعين، وبعد:\n\n"+(isFile()?"يضم هذا الملف أعمالي وإنجازاتي خلال العام الدراسي "+S.year+"، مرتبة في أقسام تبدأ بالمؤهلات والمهام وتنتهي بشهادات الشكر والتقدير. يوثق كل شاهد عملا منفذا خلال العام بتاريخه ووصفه.":"يضم هذا الملف شواهد الأداء الوظيفي للعام الدراسي "+S.year+"، مرتبة حسب عناصر تقييم الأداء الوظيفي للمعلم. يوثق كل شاهد جانبا من العمل المنفذ خلال العام داخل الصف وخارجه، ويبين أثره على تعلم الطلاب.")+"\n\nحرصت أن يكون الملف واضحا وسهل المراجعة، فلكل عنصر قسم مستقل يبدأ بصفحة فاصلة ثم شواهده بتاريخها ووصفها.\n\nأسأل الله أن يجعل هذا العمل خالصا لوجهه، "+(isFile()?"وأن ينفع به.":"وأن ينفع به أبناءنا الطلاب.")+"")}
 function qrImg(t){try{if(!t)return"";const q=new QRLib.QRCode(-1,QRLib.ECL.M);q.addData(t);q.make();const n=q.getModuleCount(),k=8,m=4,c=document.createElement("canvas");c.width=c.height=(n+m*2)*k;const x=c.getContext("2d");x.fillStyle="#fff";x.fillRect(0,0,c.width,c.height);x.fillStyle="#000";for(let r=0;r<n;r++)for(let i=0;i<n;i++)if(q.isDark(r,i))x.fillRect((i+m)*k,(r+m)*k,k,k);return `<img class="qr" src="${c.toDataURL("image/png")}" alt="">`}catch(e){return""}}
-async function logoData(file){const b=await compress(file,700);return await new Promise(r=>{const f=new FileReader();f.onload=()=>r(f.result);f.readAsDataURL(b)})}
+async function logoData(file){
+  const D=await new Promise((res,rej)=>{const u=URL.createObjectURL(file);const im=new Image();im.onload=()=>res({w:im.naturalWidth,h:im.naturalHeight,im:im,u:u});im.onerror=()=>{URL.revokeObjectURL(u);rej(new Error("img"))};im.src=u});
+  const k=Math.min(1,700/Math.max(D.w,D.h));const w=Math.max(1,Math.round(D.w*k)),h=Math.max(1,Math.round(D.h*k));
+  const c=document.createElement("canvas");c.width=w;c.height=h;const x=c.getContext("2d");
+  const stat=()=>{const d=x.getImageData(0,0,w,h).data;let n=0,l=0,t=0;for(let i=0;i<d.length;i+=16){if(d[i+3]>40){n++;l+=.3*d[i]+.59*d[i+1]+.11*d[i+2]}else t++}return {n:n,lum:n?l/n:0,tr:t/(n+t||1)}};
+  let st={n:0};
+  if(window.createImageBitmap){try{const bm=await createImageBitmap(file,{resizeWidth:w,resizeHeight:h,resizeQuality:"high"});x.clearRect(0,0,w,h);x.drawImage(bm,0,0,w,h);if(bm.close)bm.close();st=stat()}catch(e){}}
+  if(!st.n){try{x.clearRect(0,0,w,h);x.drawImage(D.im,0,0,w,h);st=stat()}catch(e){}}
+  URL.revokeObjectURL(D.u);if(!st.n)throw new Error("empty");
+  return {src:c.toDataURL("image/png"),light:st.tr>.03&&st.lum>185,info:w+"×"+h}}
 const linkOf=id=>S.links[id]||S.link||"";
-function flat(d){return new Promise(res=>{const im=new Image();im.onload=()=>{const c=document.createElement("canvas");c.width=im.naturalWidth;c.height=im.naturalHeight;const x=c.getContext("2d");x.fillStyle="#fff";x.fillRect(0,0,c.width,c.height);x.drawImage(im,0,0);res(c.toDataURL("image/jpeg",.93))};im.onerror=()=>res(d);im.src=d})}
-async function fixLogos(){let ch=false;for(const k of ["logoR","logoL"]){if(S[k]&&S[k].indexOf("data:image/jpeg")!==0){S[k]=await flat(S[k]);ch=true}}if(ch)saveS()}
+const PL={};
+function flat(d,bg){return new Promise(res=>{const im=new Image();im.onload=()=>{const c=document.createElement("canvas");c.width=im.naturalWidth;c.height=im.naturalHeight;const x=c.getContext("2d");x.fillStyle=bg;x.fillRect(0,0,c.width,c.height);x.drawImage(im,0,0);res(c.toDataURL("image/jpeg",.94))};im.onerror=()=>res("");im.src=d})}
+async function fixLogos(){const t=THEMES[S.theme]||THEMES.green;for(const k of ["R","L"]){PL[k]=S["logo"+k]?await flat(S["logo"+k],S["logo"+k+"l"]?t.deep:"#ffffff"):""}}
 function saveS(){try{localStorage.setItem(sKey(P.cur),JSON.stringify(S))}catch(e){}}
 function allEls(){
   return (isFile()?[]:ELS.map(e=>Object.assign({},e,{t:S.titles[e.id]||e.t})))
@@ -1744,7 +1755,7 @@ function renderHome(){
       </button>`}).join("")}
       <button class="tile add" data-a="addel">${svg(IC.plus)}<span>إضافة عنصر</span></button>
     </div>
-    <p class="ver">الإصدار 13</p>
+    <p class="ver">الإصدار 14</p>
   </div>`;
 }
 $("#home").addEventListener("click",e=>{
@@ -1835,7 +1846,7 @@ function settingsSheet(){
   openSheet(`<h3>بياناتي</h3><p>تظهر هذه البيانات في غلاف الملف وترويسة كل صفحة عند الطباعة.</p>
    ${f("name","الاسم")}${f("role","الصفة (مثل: المعلم، الموظفة)")}${f("subject",S.subLabel)}${f("school","المدرسة")}${f("admin","إدارة التعليم")}${f("principal",S.bossLabel)}${f("title","عنوان الملف")}${f("year","العام الدراسي")}
    <div class="field"><label for="s-link">رابط الملف الإلكتروني (يظهر باركود في الغلاف)</label><input id="s-link" value="${esc(S.link)}" placeholder="اختياري: رابط مجلد الشواهد" inputmode="url" dir="ltr" autocomplete="off"></div>
-   <div class="field"><label>شعارات الغلاف (اختياري)</label><div class="logos">${["R","L"].map(k=>`<div class="logo-slot"><span>${k==="R"?"الشعار الأيمن":"الشعار الأيسر"}</span>${S["logo"+k]?`<img src="${S["logo"+k]}" alt=""><button type="button" data-rm="${k}">إزالة</button>`:`<label for="lg-${k}">اختيار صورة</label>`}<input id="lg-${k}" data-lg="${k}" type="file" accept="image/*" hidden></div>`).join("")}</div></div>
+   <div class="field"><label>شعارات الغلاف (اختياري)</label><div class="logos">${["R","L"].map(k=>`<div class="logo-slot"><span>${k==="R"?"الشعار الأيمن":"الشعار الأيسر"}</span>${S["logo"+k]?`<img src="${S["logo"+k]}" alt="" style="background:${S["logo"+k+"l"]?(THEMES[S.theme]||THEMES.green).deep:"#fff"}"><button type="button" data-rm="${k}">إزالة</button>`:`<label for="lg-${k}">اختيار صورة</label>`}<input id="lg-${k}" data-lg="${k}" type="file" accept="image/*" hidden></div>`).join("")}</div></div>
    <div class="field"><label for="s-intro">المقدمة</label><textarea id="s-intro">${esc(introText())}</textarea></div>
    <button type="button" class="btn btn-line btn-block" id="s-extra">الرؤية والرسالة والأهداف والمؤهل</button>
    <div class="field"><label>لون الملف</label><div class="seg" id="s-theme" style="grid-auto-flow:row;grid-template-columns:1fr 1fr">${Object.keys(THEMES).map(k=>`<button type="button" data-v="${k}" aria-pressed="${(S.theme||"green")===k}"><i style="display:inline-block;width:14px;height:14px;border-radius:50%;background:${THEMES[k].deep};border:2px solid ${THEMES[k].acc};vertical-align:-2px;margin-inline-end:6px"></i>${THEMES[k].n}</button>`).join("")}</div></div>
@@ -1844,8 +1855,8 @@ function settingsSheet(){
     s.querySelector("#s-extra").onclick=()=>extraSheet();
     const sd=s.querySelector("#s-del");if(sd)sd.onclick=()=>confirmSheet("حذف هذا الملف وكل شواهده؟","يُحذف الملف مع "+plural(evs.length)+" ولا يمكن استرجاعه.","حذف",async()=>{for(const v of evs){await dbDel(v.id);dropUrl(v.id)}evs=[];const id=P.cur;try{localStorage.removeItem(sKey(id))}catch(e){}P.list=P.list.filter(f=>f.id!==id);P.cur="main";saveP();S=loadS("main");evs=others.filter(v=>v.pf==="main");others=others.filter(v=>v.pf!=="main");applyTheme();back();renderHome()});
     s.querySelector("#s-x").onclick=()=>back();
-    s.querySelectorAll("[data-lg]").forEach(i=>i.onchange=async()=>{const f=i.files[0];if(!f)return;try{S["logo"+i.dataset.lg]=await logoData(f);saveS();settingsSheet()}catch(e){toast("تعذر قراءة الشعار")}});
-    s.querySelectorAll("[data-rm]").forEach(b=>b.onclick=()=>{S["logo"+b.dataset.rm]="";saveS();settingsSheet()});
+    s.querySelectorAll("[data-lg]").forEach(i=>i.onchange=async()=>{const f=i.files[0];if(!f)return;try{const r=await logoData(f);S["logo"+i.dataset.lg]=r.src;S["logo"+i.dataset.lg+"l"]=r.light;saveS();settingsSheet();toast(r.light?"شعار فاتح: سيظهر على خلفية الغلاف الملونة":"تم حفظ الشعار")}catch(e){toast("تعذر قراءة هذه الصورة. جرّب صورة أخرى للشعار")}});
+    s.querySelectorAll("[data-rm]").forEach(b=>b.onclick=()=>{S["logo"+b.dataset.rm]="";S["logo"+b.dataset.rm+"l"]=false;saveS();settingsSheet()});
     s.querySelector("#s-save").onclick=()=>{["name","role","subject","school","admin","principal","title","year","link","intro"].forEach(k=>S[k]=s.querySelector("#s-"+k).value.trim());saveS();back();renderHome();toast("تم حفظ البيانات")}})}
 function extraSheet(){
   const goals=(S.goals||[]).map(g=>Object.assign({},g));
@@ -1937,7 +1948,7 @@ function buildPrint(onlyId){
       ${ring("width:190mm;height:190mm;left:-142mm;top:52mm;border:13mm solid var(--p-acc)")}
       ${ring("width:104mm;height:104mm;left:-99mm;top:95mm;border:5mm solid var(--p-r1)")}
       ${ring("width:46mm;height:46mm;left:22mm;top:24mm;background:var(--p-r2)")}
-      <div class="cv-top"><div class="cv-org">${S.logoR?`<span class="lg"><img src="${S.logoR}" alt=""></span>`:""}<div>المملكة العربية السعودية<br>وزارة التعليم<br>${esc(S.admin)}<br>${esc(S.school)}</div></div>${S.logoL?`<span class="lg"><img src="${S.logoL}" alt=""></span>`:`<div class="cv-year">${esc(S.year)}</div>`}</div>
+      <div class="cv-top"><div class="cv-org">${PL.R?`<span class="lg${S.logoRl?" dk":""}"><img src="${PL.R}" alt=""></span>`:""}<div>المملكة العربية السعودية<br>وزارة التعليم<br>${esc(S.admin)}<br>${esc(S.school)}</div></div>${PL.L?`<span class="lg${S.logoLl?" dk":""}"><img src="${PL.L}" alt=""></span>`:`<div class="cv-year">${esc(S.year)}</div>`}</div>
       <div class="cv-main"><div class="cv-eye">العام الدراسي ${esc(S.year)}</div><h1${Math.max(TL[0].length,TL[1].length)>13?' class="sm"':""}>${esc(TL[0])}<span>${esc(TL[1])}</span></h1><div class="cv-bar"></div>
         <p>${isFile()?"توثيق الأعمال والمهام والإنجازات المنفذة خلال العام الدراسي.":"توثيق أعمال المعلم وإنجازاته وفق عناصر تقييم الأداء الوظيفي لشاغلي الوظائف التعليمية."}</p></div>
       <div class="cv-card"><div class="info">

@@ -215,6 +215,7 @@ img{max-width:100%}
   .cv-eye{color:var(--p-acc);font-weight:600;font-size:13pt;letter-spacing:.3mm}
   .cv-main h1{font-family:var(--display);font-weight:800;font-size:50pt;line-height:1.35;margin:3mm 0 0}
   .cv-main h1 span{display:block;color:var(--p-acc)}
+  .cv-main h1.sm{font-size:40pt}
   .cv-bar{width:34mm;height:2.6mm;border-radius:2mm;background:var(--p-acc);margin:7mm 0 6mm}
   .cv-main p{margin:0;font-size:13pt;line-height:1.9;max-width:104mm;color:var(--p-t1)}
   .cv-card{position:relative;margin:0 16mm 10mm;background:#fff;color:#10261F;border-radius:6mm;padding:8mm 9mm;display:flex;align-items:center;gap:8mm}
@@ -1643,8 +1644,10 @@ function applyTheme(){const t=THEMES[S.theme]||THEMES.green,r=document.documentE
 applyTheme();
 function introText(){return S.intro||("الحمد لله رب العالمين، والصلاة والسلام على نبينا محمد وعلى آله وصحبه أجمعين، وبعد:\n\n"+(isFile()?"يضم هذا الملف أعمالي وإنجازاتي خلال العام الدراسي "+S.year+"، مرتبة في أقسام تبدأ بالمؤهلات والمهام وتنتهي بشهادات الشكر والتقدير. يوثق كل شاهد عملا منفذا خلال العام بتاريخه ووصفه.":"يضم هذا الملف شواهد الأداء الوظيفي للعام الدراسي "+S.year+"، مرتبة حسب عناصر تقييم الأداء الوظيفي للمعلم. يوثق كل شاهد جانبا من العمل المنفذ خلال العام داخل الصف وخارجه، ويبين أثره على تعلم الطلاب.")+"\n\nحرصت أن يكون الملف واضحا وسهل المراجعة، فلكل عنصر قسم مستقل يبدأ بصفحة فاصلة ثم شواهده بتاريخها ووصفها.\n\nأسأل الله أن يجعل هذا العمل خالصا لوجهه، "+(isFile()?"وأن ينفع به.":"وأن ينفع به أبناءنا الطلاب.")+"")}
 function qrImg(t){try{if(!t)return"";const q=new QRLib.QRCode(-1,QRLib.ECL.M);q.addData(t);q.make();const n=q.getModuleCount(),k=8,m=4,c=document.createElement("canvas");c.width=c.height=(n+m*2)*k;const x=c.getContext("2d");x.fillStyle="#fff";x.fillRect(0,0,c.width,c.height);x.fillStyle="#000";for(let r=0;r<n;r++)for(let i=0;i<n;i++)if(q.isDark(r,i))x.fillRect((i+m)*k,(r+m)*k,k,k);return `<img class="qr" src="${c.toDataURL("image/png")}" alt="">`}catch(e){return""}}
-function logoData(file){return new Promise((res,rej)=>{const u=URL.createObjectURL(file);const im=new Image();im.onload=()=>{const k=Math.min(1,420/Math.max(im.naturalWidth,im.naturalHeight));const c=document.createElement("canvas");c.width=Math.max(1,Math.round(im.naturalWidth*k));c.height=Math.max(1,Math.round(im.naturalHeight*k));c.getContext("2d").drawImage(im,0,0,c.width,c.height);URL.revokeObjectURL(u);res(c.toDataURL("image/png"))};im.onerror=()=>{URL.revokeObjectURL(u);rej(new Error("img"))};im.src=u})}
+function logoData(file){return new Promise((res,rej)=>{const u=URL.createObjectURL(file);const im=new Image();im.onload=()=>{const k=Math.min(1,420/Math.max(im.naturalWidth,im.naturalHeight));const c=document.createElement("canvas");c.width=Math.max(1,Math.round(im.naturalWidth*k));c.height=Math.max(1,Math.round(im.naturalHeight*k));const x=c.getContext("2d");x.fillStyle="#fff";x.fillRect(0,0,c.width,c.height);x.drawImage(im,0,0,c.width,c.height);URL.revokeObjectURL(u);res(c.toDataURL("image/jpeg",.93))};im.onerror=()=>{URL.revokeObjectURL(u);rej(new Error("img"))};im.src=u})}
 const linkOf=id=>S.links[id]||S.link||"";
+function flat(d){return new Promise(res=>{const im=new Image();im.onload=()=>{const c=document.createElement("canvas");c.width=im.naturalWidth;c.height=im.naturalHeight;const x=c.getContext("2d");x.fillStyle="#fff";x.fillRect(0,0,c.width,c.height);x.drawImage(im,0,0);res(c.toDataURL("image/jpeg",.93))};im.onerror=()=>res(d);im.src=d})}
+async function fixLogos(){let ch=false;for(const k of ["logoR","logoL"]){if(S[k]&&S[k].indexOf("data:image/jpeg")!==0){S[k]=await flat(S[k]);ch=true}}if(ch)saveS()}
 function saveS(){try{localStorage.setItem(sKey(P.cur),JSON.stringify(S))}catch(e){}}
 function allEls(){
   return (isFile()?[]:ELS.map(e=>Object.assign({},e,{t:S.titles[e.id]||e.t})))
@@ -1741,7 +1744,7 @@ function renderHome(){
       </button>`}).join("")}
       <button class="tile add" data-a="addel">${svg(IC.plus)}<span>إضافة عنصر</span></button>
     </div>
-    <p class="ver">الإصدار 11</p>
+    <p class="ver">الإصدار 12</p>
   </div>`;
 }
 $("#home").addEventListener("click",e=>{
@@ -1907,7 +1910,7 @@ function printSheet(elId){
     if(pm)pm.onclick=e=>{const b=e.target.closest("button");if(!b)return;S.mode=b.dataset.v;saveS();pm.querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",x===b));syn()};
     s.querySelector("#p-x").onclick=()=>back();
     s.querySelector("#p-go").onclick=async()=>{const pl=s.querySelector("#p-link");if(pl){S.link=pl.value.trim();saveS()}
-      toast("جاري تجهيز الصور للطباعة");await prepPrint();const n=buildPrint(scope==="one"?elId:null);if(!n){toast("لا توجد شواهد أو روابط للطباعة");return}
+      toast("جاري تجهيز الصور للطباعة");await fixLogos();await prepPrint();const n=buildPrint(scope==="one"?elId:null);if(!n){toast("لا توجد شواهد أو روابط للطباعة");return}
       await Promise.all([...document.querySelectorAll("#printRoot img")].map(i=>i.decode?i.decode().catch(()=>{}):0));
       try{window.print()}catch(e){toast("الطباعة غير متاحة في هذا العرض")}}})}
 const LAT=(()=>{let d="";for(let x=-180;x<=390;x+=9.2){d+=`M${x.toFixed(1)} 0L${(x+171.5).toFixed(1)} 297M${x.toFixed(1)} 0L${(x-171.5).toFixed(1)} 297`}return `<svg class="lat" viewBox="0 0 210 297" preserveAspectRatio="xMidYMin slice" aria-hidden="true"><path d="${d}" fill="none" style="stroke:var(--p-lat)" stroke-width=".4"/></svg>`})();
@@ -1931,11 +1934,11 @@ function buildPrint(onlyId){
   if(full){
     const qr=qrImg(S.link);
     pages+=`<section class="pp cv">${LAT}
-      ${ring("width:190mm;height:190mm;left:-128mm;top:52mm;border:13mm solid var(--p-acc)")}
-      ${ring("width:104mm;height:104mm;left:-85mm;top:95mm;border:5mm solid var(--p-r1)")}
+      ${ring("width:190mm;height:190mm;left:-142mm;top:52mm;border:13mm solid var(--p-acc)")}
+      ${ring("width:104mm;height:104mm;left:-99mm;top:95mm;border:5mm solid var(--p-r1)")}
       ${ring("width:46mm;height:46mm;left:22mm;top:24mm;background:var(--p-r2)")}
       <div class="cv-top"><div class="cv-org">${S.logoR?`<span class="lg"><img src="${S.logoR}" alt=""></span>`:""}<div>المملكة العربية السعودية<br>وزارة التعليم<br>${esc(S.admin)}<br>${esc(S.school)}</div></div>${S.logoL?`<span class="lg"><img src="${S.logoL}" alt=""></span>`:`<div class="cv-year">${esc(S.year)}</div>`}</div>
-      <div class="cv-main"><div class="cv-eye">العام الدراسي ${esc(S.year)}</div><h1>${esc(TL[0])}<span>${esc(TL[1])}</span></h1><div class="cv-bar"></div>
+      <div class="cv-main"><div class="cv-eye">العام الدراسي ${esc(S.year)}</div><h1${Math.max(TL[0].length,TL[1].length)>13?' class="sm"':""}>${esc(TL[0])}<span>${esc(TL[1])}</span></h1><div class="cv-bar"></div>
         <p>${isFile()?"توثيق الأعمال والمهام والإنجازات المنفذة خلال العام الدراسي.":"توثيق أعمال المعلم وإنجازاته وفق عناصر تقييم الأداء الوظيفي لشاغلي الوظائف التعليمية."}</p></div>
       <div class="cv-card"><div class="info">
         <div class="full"><div class="lb">إعداد ${esc(S.role)}</div><div class="cv-name">${esc(S.name)}</div></div>

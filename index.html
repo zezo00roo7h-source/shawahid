@@ -105,6 +105,7 @@ img{max-width:100%}
 .wt{color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
 .tile.add{border-style:dashed;align-items:center;justify-content:center;color:var(--muted);font-weight:600}
 .tile.add svg{width:28px;height:28px}
+.ver{text-align:center;color:var(--muted);font-size:12.5px;margin:-18px 0 28px}
 
 /* element page */
 .bar{position:sticky;top:0;z-index:5;background:var(--brand-deep);color:#fff}
@@ -359,6 +360,7 @@ function renderHome(){
       </button>`}).join("")}
       <button class="tile add" data-a="addel">${svg(IC.plus)}<span>إضافة عنصر</span></button>
     </div>
+    <p class="ver">الإصدار 5</p>
   </div>`;
 }
 $("#home").addEventListener("click",e=>{
@@ -423,8 +425,10 @@ $("#elview").addEventListener("change",async e=>{
 function openViewer(id){const v=evs.find(x=>x.id===id);if(!v)return;
   const d=document.createElement("div");d.className="viewer";d.innerHTML=`
    <div class="viewer-top"><button class="icon-btn" data-a="close" aria-label="إغلاق">${svg(IC.x)}</button><button class="icon-btn" data-a="del" aria-label="حذف الشاهد">${svg(IC.trash)}</button></div>
-   <div class="viewer-img"><img src="${urlOf(v)}" alt=""></div><div class="viewer-cap">${esc(v.cap||"بدون وصف")} · ${esc(hijri(v.ts))}</div>`;
+   <div class="viewer-img"><img src="${urlOf(v)}" alt=""></div><div class="viewer-cap">${esc(v.cap||"بدون وصف")} · ${esc(hijri(v.ts))}<br><small id="v-info" style="opacity:.7">${Math.round(v.blob.size/1024)} ك.ب</small></div>`;
   $("#layer").appendChild(d);const depth=stack.length;
+  const vi=d.querySelector(".viewer-img img"),inf=d.querySelector("#v-info");const base=inf.textContent;
+  vi.onload=()=>{inf.textContent=base+" · "+vi.naturalWidth+"×"+vi.naturalHeight};vi.onerror=()=>{inf.textContent=base+" · تعذر عرض الصورة"};
   d.addEventListener("click",e=>{const t=e.target.closest("[data-a]");if(!t)return;
     if(t.dataset.a==="close")back();
     else confirmSheet("حذف هذا الشاهد؟","لن تستطيع استرجاعه بعد الحذف.","حذف",async()=>{await dbDel(v.id);dropUrl(v.id);evs=evs.filter(x=>x.id!==v.id);back(stack.length-depth);setTimeout(()=>{if(cur!=null)renderEl();toast("تم حذف الشاهد")},60)})});

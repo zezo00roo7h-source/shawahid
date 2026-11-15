@@ -1644,7 +1644,7 @@ function applyTheme(){const t=THEMES[S.theme]||THEMES.green,r=document.documentE
 applyTheme();
 function introText(){return S.intro||("الحمد لله رب العالمين، والصلاة والسلام على نبينا محمد وعلى آله وصحبه أجمعين، وبعد:\n\n"+(isFile()?"يضم هذا الملف أعمالي وإنجازاتي خلال العام الدراسي "+S.year+"، مرتبة في أقسام تبدأ بالمؤهلات والمهام وتنتهي بشهادات الشكر والتقدير. يوثق كل شاهد عملا منفذا خلال العام بتاريخه ووصفه.":"يضم هذا الملف شواهد الأداء الوظيفي للعام الدراسي "+S.year+"، مرتبة حسب عناصر تقييم الأداء الوظيفي للمعلم. يوثق كل شاهد جانبا من العمل المنفذ خلال العام داخل الصف وخارجه، ويبين أثره على تعلم الطلاب.")+"\n\nحرصت أن يكون الملف واضحا وسهل المراجعة، فلكل عنصر قسم مستقل يبدأ بصفحة فاصلة ثم شواهده بتاريخها ووصفها.\n\nأسأل الله أن يجعل هذا العمل خالصا لوجهه، "+(isFile()?"وأن ينفع به.":"وأن ينفع به أبناءنا الطلاب.")+"")}
 function qrImg(t){try{if(!t)return"";const q=new QRLib.QRCode(-1,QRLib.ECL.M);q.addData(t);q.make();const n=q.getModuleCount(),k=8,m=4,c=document.createElement("canvas");c.width=c.height=(n+m*2)*k;const x=c.getContext("2d");x.fillStyle="#fff";x.fillRect(0,0,c.width,c.height);x.fillStyle="#000";for(let r=0;r<n;r++)for(let i=0;i<n;i++)if(q.isDark(r,i))x.fillRect((i+m)*k,(r+m)*k,k,k);return `<img class="qr" src="${c.toDataURL("image/png")}" alt="">`}catch(e){return""}}
-function logoData(file){return new Promise((res,rej)=>{const u=URL.createObjectURL(file);const im=new Image();im.onload=()=>{const k=Math.min(1,420/Math.max(im.naturalWidth,im.naturalHeight));const c=document.createElement("canvas");c.width=Math.max(1,Math.round(im.naturalWidth*k));c.height=Math.max(1,Math.round(im.naturalHeight*k));const x=c.getContext("2d");x.fillStyle="#fff";x.fillRect(0,0,c.width,c.height);x.drawImage(im,0,0,c.width,c.height);URL.revokeObjectURL(u);res(c.toDataURL("image/jpeg",.93))};im.onerror=()=>{URL.revokeObjectURL(u);rej(new Error("img"))};im.src=u})}
+async function logoData(file){const b=await compress(file,700);return await new Promise(r=>{const f=new FileReader();f.onload=()=>r(f.result);f.readAsDataURL(b)})}
 const linkOf=id=>S.links[id]||S.link||"";
 function flat(d){return new Promise(res=>{const im=new Image();im.onload=()=>{const c=document.createElement("canvas");c.width=im.naturalWidth;c.height=im.naturalHeight;const x=c.getContext("2d");x.fillStyle="#fff";x.fillRect(0,0,c.width,c.height);x.drawImage(im,0,0);res(c.toDataURL("image/jpeg",.93))};im.onerror=()=>res(d);im.src=d})}
 async function fixLogos(){let ch=false;for(const k of ["logoR","logoL"]){if(S[k]&&S[k].indexOf("data:image/jpeg")!==0){S[k]=await flat(S[k]);ch=true}}if(ch)saveS()}
@@ -1681,10 +1681,10 @@ function toast(m){let t=$(".toast");if(!t){t=document.createElement("div");t.cla
 function hijri(ts){try{return new Intl.DateTimeFormat("ar-SA-u-ca-islamic-umalqura-nu-latn",{day:"numeric",month:"long",year:"numeric"}).format(new Date(ts))}catch(e){return new Date(ts).toLocaleDateString()}}
 function blank(c){try{const t=document.createElement("canvas");t.width=t.height=8;const x=t.getContext("2d");x.drawImage(c,0,0,8,8);const d=x.getImageData(0,0,8,8).data;
   for(let i=4;i<d.length;i+=4){if(Math.abs(d[i]-d[0])>3||Math.abs(d[i+1]-d[1])>3||Math.abs(d[i+2]-d[2])>3)return false}return true}catch(e){return false}}
-async function compress(file){
+async function compress(file,max){
   const D=await new Promise((res,rej)=>{const u=URL.createObjectURL(file);const im=new Image();
     im.onload=()=>res({w:im.naturalWidth,h:im.naturalHeight,im:im,u:u});im.onerror=()=>{URL.revokeObjectURL(u);rej(new Error("img"))};im.src=u});
-  const k=Math.min(1,1600/Math.max(D.w,D.h));const w=Math.max(1,Math.round(D.w*k)),h=Math.max(1,Math.round(D.h*k));
+  const k=Math.min(1,(max||1600)/Math.max(D.w,D.h));const w=Math.max(1,Math.round(D.w*k)),h=Math.max(1,Math.round(D.h*k));
   const c=document.createElement("canvas");c.width=w;c.height=h;const x=c.getContext("2d");let ok=false;
   const clear=()=>{x.fillStyle="#fff";x.fillRect(0,0,w,h)};
   if(window.createImageBitmap){try{clear();const bm=await createImageBitmap(file,{resizeWidth:w,resizeHeight:h,resizeQuality:"high"});x.drawImage(bm,0,0,w,h);if(bm.close)bm.close();ok=!blank(c)}catch(e){}}
@@ -1744,7 +1744,7 @@ function renderHome(){
       </button>`}).join("")}
       <button class="tile add" data-a="addel">${svg(IC.plus)}<span>إضافة عنصر</span></button>
     </div>
-    <p class="ver">الإصدار 12</p>
+    <p class="ver">الإصدار 13</p>
   </div>`;
 }
 $("#home").addEventListener("click",e=>{
